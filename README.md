@@ -2,7 +2,7 @@
 
 ## Members of the group
 -- Replace with student information --
-* Adam Svensson adv@bth.se
+* Adam Nguyen adng21@bth.se
 * Albin Persson alo@bth.se
 
 ## Project Description
