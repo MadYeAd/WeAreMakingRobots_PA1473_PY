@@ -1,4 +1,4 @@
-# Group 13
+# "We are making robots" Group 9 
 
 ## Members of the group
 -- Replace with student information --
