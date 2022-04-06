@@ -1,4 +1,4 @@
-# Group 13
+# -- Replace with the name of your project --
 
 ## Members of the group
 -- Replace with student information --
