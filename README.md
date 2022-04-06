@@ -3,7 +3,10 @@
 ## Members of the group
 -- Replace with student information --
 * Adam Nguyen adng21@bth.se
-* Henric Caliban alo@bth.se
+* Sebastian Johansson alo@bth.se
+* Anna Bergknut
+* David Säll
+* Jeff Andersson
 
 ## Project Description
 -- Place a short description of the project so that the reader know what the goal of the repository is --
