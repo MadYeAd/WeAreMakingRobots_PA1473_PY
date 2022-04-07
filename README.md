@@ -3,14 +3,9 @@
 ## Members of the group
 -- Replace with student information --
 * Adam Nguyen adng21@bth.se
-<<<<<<< HEAD
 * Sebastian Johansson alo@bth.se
 * Anna Bergknut anbe21@student.bth.se
-=======
-* Sebastian Johansson sejh21@student.bth.se
-* Anna Bergknut
->>>>>>> be1ad8b8d2f94a83f0ffb624faed1981aab09730
-* David Säll
+* David Säll dasl21@student.bth.se
 * Jeff Andersson jean21@student.se
 
 ## Project Description
