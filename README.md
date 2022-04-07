@@ -6,7 +6,7 @@
 * Sebastian Johansson sejh21@student.bth.se
 * Anna Bergknut
 * David Säll
-* Jeff Andersson
+* Jeff Andersson jean21@student.se
 
 ## Project Description
 -- Place a short description of the project so that the reader know what the goal of the repository is --
