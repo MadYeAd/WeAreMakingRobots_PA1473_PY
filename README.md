@@ -4,7 +4,7 @@
 -- Replace with student information --
 * Adam Nguyen adng21@bth.se
 * Sebastian Johansson alo@bth.se
-* Anna Bergknut
+* Anna Bergknut anbe21@student.bth.se
 * David Säll
 * Jeff Andersson jean21@student.se
 
