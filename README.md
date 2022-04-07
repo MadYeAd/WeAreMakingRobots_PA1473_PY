@@ -3,7 +3,7 @@
 ## Members of the group
 -- Replace with student information --
 * Adam Nguyen adng21@bth.se
-* Sebastian Johansson alo@bth.se
+* Sebastian Johansson sejh21@student.bth.se
 * Anna Bergknut
 * David Säll
 * Jeff Andersson
