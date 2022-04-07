@@ -5,7 +5,7 @@
 * Adam Nguyen adng21@bth.se
 * Sebastian Johansson alo@bth.se
 * Anna Bergknut
-* David Säll
+* David Säll dasl21@student.bth.se
 * Jeff Andersson
 
 ## Project Description
