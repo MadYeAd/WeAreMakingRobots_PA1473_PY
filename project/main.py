@@ -13,5 +13,3 @@ def main():
 
 if __name__ == '__main__':
     sys.exit(main())
-
-#Jag hatar min grupp - Sebbe
