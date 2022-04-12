@@ -11,7 +11,7 @@ import __init__
 motor_left = Motor(Port.C)
 motor_right = Motor(Port.B)
 
-###Jeff
+### Jeff ###
 ultrasonic = UltrasonicSensor(Port.S4)
 
 
@@ -50,7 +50,7 @@ def colisionavoidenc():
     else:
         motors_perform("forward", 0.5)
 
-###
+### stop ###
 
 def main():
     return 0
