@@ -58,6 +58,34 @@ def colisionavoidenc():
 
 ### stop ###
 
+#Sebbes trashpile
+
+def pickup():
+    #Här måste den först identifiera att den kan plocka upp, vänta på specifikationer
+
+    #Checkar så att den inte redan har lyft upp objektet och ifall objektet är på "gaffeln"
+    if not isHolding and not touch_sensor.pressed():
+        #sätter graderna på 0 för att förenkla mätandet sedan
+        crane_motor.resetAngle(0)
+        ev3.speaker.beep()
+        #Lyfter tills kranen har lyft objektet 45 grader upp eller 
+        #tills den tappar objektet
+        while crane_motor.angle() < 45 and touch_sensor.pressed:
+            crane_motor.run(10)
+
+        #Om den fortfarande håller objektet registreras det
+        if touch_sensor.pressed:
+            isHolding = True
+            #Om den tappade objektet går den ned igen
+        else:
+            while crane_motor.angle() > 5:
+                crane_motor.run(-10)
+
+    #Ser till så att den håller uppe lasten när den väl har plockat upp 
+
+    if isHolding:
+        crane_motor.brake()
+
 def main():
     return 0
 
