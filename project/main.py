@@ -9,25 +9,84 @@ import sys
 import __init__
 
 ev3 = EV3Brick()
-motor_left = Motor(Port.C)
-motor_right = Motor(Port.B)
+motor_left = Motor(Port.C, positive_direction = Direction.COUNTERCLOCKWISE, gears = [12, 20])
+motor_right = Motor(Port.B, positive_direction = Direction.COUNTERCLOCKWISE, gears = [12, 20])
 crane_motor = Motor(Port.A)
-robot = DriveBase(motor_left, motor_right, wheel_diameter= 56,axle_track= 118)
-Light_sensor = ColorSensor(Port.S3)
-ultrasonic  = UltrasonicSensor(Port.S4)
+robot = DriveBase(motor_left, motor_right, wheel_diameter= 47,axle_track= 128)
+light_sensor = ColorSensor(Port.S3)
+ultrasonic_sensor  = UltrasonicSensor(Port.S4)
 touch_sensor = TouchSensor(Port.S1)
 
-### Jeff ###
-ultrasonic = UltrasonicSensor(Port.S4)
+is_holding = False
 
+light = 100
+dark = 9
+reflection = (light + dark) / 2
+speed = 250
 
-def motors_perform(action, speed_modifier):     # Temp want input...
+### DAVID ###
+
+def leftArea(areaColor):
+    if ColorSensor == areaColor:
+        print('Robot has left sprcific area')
+
+def returnToSpecArea(areaColor):
+    groundColor = light_sensor.color()
+    turnSpeed = 90
+    
+    # Kör runt i en cirkel som blir större tills färgsensorn hittar rätt färg
+    while groundColor != areaColor:
+        robot.drive(50, turnSpeed)
+        turnSpeed -= 1
+        groundColor = light_sensor.color()
+    return "Tillbaka!"
+
+def ExitSpecArea(areaColor):
+    groundColor = light_sensor.color()
+    turnSpeed = 90
+
+    # Kör runt i en cirkel som blir större tills färgsensorn hittar en ny färg
+    while groundColor == areaColor:
+        robot.drive(50, turnSpeed)
+        turnSpeed -= 0.1
+        groundColor = light_sensor.color()
+    return "Ute!"
+
+    ### SLUT DAVID ###
+
+def pickup():
+    global is_holding
+    #Här måste den först identifiera att den kan plocka upp, vänta på specifikationer
+
+    # Checkar så att den inte redan har lyft upp objektet och ifall objektet är på "gaffeln"
+    if not is_holding and touch_sensor.pressed():
+        #sätter graderna på 0 för att förenkla mätandet sedan
+
+        #Lyfter tills kranen har lyft objektet 45 grader upp eller 
+        #tills den tappar objektet
+        while crane_motor.angle() > -90 and touch_sensor.pressed():
+            
+            crane_motor.run(-100)
+        crane_motor.run(0)
+        
+        #Om den fortfarande håller objektet registreras det
+        if touch_sensor.pressed():
+            is_holding = True
+            #Om den tappade objektet går den ned igen
+        else:
+            while crane_motor.angle() <= 1:
+                crane_motor.run(100)
+            crane_motor.run(0)
+
+    #Ser till så att den håller uppe lasten när den väl har plockat upp 
+
+def motors_perform(action, speed_modifier):
     if action == "hold":
-        motor_right.hold()
-        motor_left.hold()
+        robot.drive(0,0)
     elif action == "forward":
-        motor_right.run(360 * speed_modifier)
-        motor_left.run(360 * speed_modifier)
+        # motor_right.run(360 * speed_modifier)
+        # motor_left.run(360 * speed_modifier)
+        robot.drive(36 * speed_modifier,0)
     elif action == "left":
         motor_right.run(180 * speed_modifier)
         motor_left.run(-180 * speed_modifier)
@@ -35,90 +94,74 @@ def motors_perform(action, speed_modifier):     # Temp want input...
         motor_right.run(-180 * speed_modifier)
         motor_left.run(180 * speed_modifier) 
 
-#
-
-def colisionavoidenc():
-    if ultrasonic.distance() < 200 and ultrasonic.distance() > 150:
-        motors_perform("forward", 0.4)
-        print('Decreasing speed1')
-    elif ultrasonic.distance() < 150 and ultrasonic.distance() > 120:
-        motors_perform("forward", 0.3)
-        print('Decreasing speed2')
-    elif ultrasonic.distance() < 120 and ultrasonic.distance() > 100:
-        motors_perform("forward", 0.2)
-        print('Decreasing speed3')
-    elif ultrasonic.distance() < 100 and ultrasonic.distance() > 70:
-        motors_perform("forward", 0.1)
-        print('Decreasing speed4')
-    elif ultrasonic.distance() < 70:
-        motors_perform("hold", 0)
-        print('Full stop')    
+def collisionavoidence():
+    if ultrasonic_sensor.distance() < 200 and ultrasonic_sensor.distance() > 150:
+        return 0.8
+        #motors_perform("forward", 0.4)
+        #print('Decreasing speed1')
+    elif ultrasonic_sensor.distance() < 150 and ultrasonic_sensor.distance() > 120:
+        return 0.6
+        #motors_perform("forward", 0.3)
+        #print('Decreasing speed2')
+    elif ultrasonic_sensor.distance() < 120 and ultrasonic_sensor.distance() > 100:
+        return 0.4
+        #motors_perform("forward", 0.2)
+        #print('Decreasing speed3')
+    elif ultrasonic_sensor.distance() < 100 and ultrasonic_sensor.distance() > 70:
+        return 0.2
+        #motors_perform("forward", 0.1)
+        #print('Decreasing speed4')
+    elif ultrasonic_sensor.distance() < 70:
+        return 0.0
+        #motors_perform("hold", 0)
+        print('Full stop')  
     else:
-        motors_perform("forward", 0.5)
-
-### stop ###
-
-#Sebbes trashpile
-
-def pickup():
-    #Här måste den först identifiera att den kan plocka upp, vänta på specifikationer
-
-    #Checkar så att den inte redan har lyft upp objektet och ifall objektet är på "gaffeln"
-    if not isHolding and not touch_sensor.pressed():
-        #sätter graderna på 0 för att förenkla mätandet sedan
-        crane_motor.resetAngle(0)
-        ev3.speaker.beep()
-        #Lyfter tills kranen har lyft objektet 45 grader upp eller 
-        #tills den tappar objektet
-        while crane_motor.angle() < 45 and touch_sensor.pressed:
-            crane_motor.run(10)
-
-        #Om den fortfarande håller objektet registreras det
-        if touch_sensor.pressed:
-            isHolding = True
-            #Om den tappade objektet går den ned igen
-        else:
-            while crane_motor.angle() > 5:
-                crane_motor.run(-10)
-
-    #Ser till så att den håller uppe lasten när den väl har plockat upp 
-
-    if isHolding:
-        crane_motor.brake()
+        return 1
+        #motors_perform("forward", 0.5)
 
 def main():
-    return 0
+    
+    returnToSpecArea(Color.BLUE)
+    # pickup()
 
+
+    
+    # while crane_motor.angle() > -180:
+    #     print(crane_motor.angle())
+    #     crane_motor.run(-360)
+    # crane_motor.run(0)
+    
+    # while crane_motor.angle() < 90:
+    #     crane_motor.run(100)
+    # crane_motor.run(0)
+
+    # while True:
+    #     # drive_sensor.reflection() > 0: # om sensorn inte ser helt sv
+    #     speed_modifier = collisionavoidence()
+    #     mod_speed = speed * speed_modifier
+
+
+    #     correction = (reflection - light_sensor.reflection()) * 2
+        
+    #     # if correction >= 4 or correction <=-4:
+    #     #     speed_modifier *= 0.5
+    #     #     if correction <=-4:
+    #     #         mod*=-1
+    #     #     else:
+    #     #         mod = correction
+    #     #     modifier=0.5-(mod/100)
+            
+    #     #     speed_modifier *= modifier
+    #     # print(correction)
+
+    #     robot.drive(mod_speed , -correction)
+        
 if __name__ == '__main__':
     sys.exit(main())
 
+### stop ###
+#Sebbes trashpile
 
-#---------------------Anna --------------------------------------------
 
-# ev3 = EV3Brick()
-# ev3.speaker.beep()
 
-left_motor = Motor(Port.A) 
-right_motor = Motor(Port.B)
-robot = DriveBase(left_motor, right_motor, wheel_diameter=56, axle_track=152) 
 
-drive_sensor = ColorSensor(Port.S1)
-ultrasonic_sensor = UltrasonicSensor(Port.S2)
-
-light = 50
-dark = 10
-reflection = (light + dark) / 2
-speed = 200
-
-while True:
-    print(drive_sensor.reflection())
-    mod_speed = speed
-    if ultrasonic_sensor.distance() < 150:
-        ''' cruse control'''
-        mod_speed = -0.1
-        robot.drive(mod_speed * speed, 0)
-        print(ultrasonic_sensor.distance())
-    else: # drive_sensor.reflection() > 0: # om sensorn inte ser helt svart
-        mod_speed = speed / 2
-        correction = (reflection - drive_sensor.reflection()) * 2
-        robot.drive(mod_speed, -correction)
