@@ -91,3 +91,34 @@ def main():
 
 if __name__ == '__main__':
     sys.exit(main())
+
+
+#---------------------Anna --------------------------------------------
+
+# ev3 = EV3Brick()
+# ev3.speaker.beep()
+
+left_motor = Motor(Port.A) 
+right_motor = Motor(Port.B)
+robot = DriveBase(left_motor, right_motor, wheel_diameter=56, axle_track=152) 
+
+drive_sensor = ColorSensor(Port.S1)
+ultrasonic_sensor = UltrasonicSensor(Port.S2)
+
+light = 50
+dark = 10
+reflection = (light + dark) / 2
+speed = 200
+
+while True:
+    print(drive_sensor.reflection())
+    mod_speed = speed
+    if ultrasonic_sensor.distance() < 150:
+        ''' cruse control'''
+        mod_speed = -0.1
+        robot.drive(mod_speed * speed, 0)
+        print(ultrasonic_sensor.distance())
+    else: # drive_sensor.reflection() > 0: # om sensorn inte ser helt svart
+        mod_speed = speed / 2
+        correction = (reflection - drive_sensor.reflection()) * 2
+        robot.drive(mod_speed, -correction)
