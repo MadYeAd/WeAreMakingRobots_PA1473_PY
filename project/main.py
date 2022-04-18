@@ -1,10 +1,17 @@
 #!/usr/bin/env pybricks-micropython
+from asyncio.windows_events import NULL
+from turtle import right
 from pybricks import robotics
 from pybricks.hubs import EV3Brick
 from pybricks.ev3devices import Motor, ColorSensor, UltrasonicSensor, TouchSensor
 from pybricks.parameters import Port, Stop, Direction, Button, Color
 from pybricks.tools import wait, StopWatch
 from pybricks.robotics import DriveBase
+from pybricks.messaging import BluetoothMailboxClient, TextMailbox
+
+from pybricks import ev3brick as brick
+from pybricks.parameters import Button, Color
+
 import sys
 import __init__
 
@@ -23,6 +30,18 @@ light = 100
 dark = 9
 reflection = (light + dark) / 2
 speed = 250
+
+color_to_fetch = Color.RED 
+
+
+client = BluetoothMailboxClient()
+mbox = TextMailbox('greeting', client)
+client.connect("ev3dev")
+
+
+
+light_red = 20
+light_yellow = 20
 
 ### DAVID ###
 
@@ -119,13 +138,18 @@ def collisionavoidence():
         return 1
         #motors_perform("forward", 0.5)
 
-def main():
-    
-    returnToSpecArea(Color.BLUE)
-    # pickup()
+def color_change(color):
+    color_to_fetch = color
 
+def color_button_change():
+    button = brick.buttons()
 
-    
+    if Button.LEFT in button:
+        color_change(Color.RED)
+    elif Button.RIGHT in button: 
+        color_change(Color.BLUE)
+
+def main(): 
     # while crane_motor.angle() > -180:
     #     print(crane_motor.angle())
     #     crane_motor.run(-360)
@@ -135,33 +159,24 @@ def main():
     #     crane_motor.run(100)
     # crane_motor.run(0)
 
-    # while True:
-    #     # drive_sensor.reflection() > 0: # om sensorn inte ser helt sv
-    #     speed_modifier = collisionavoidence()
-    #     mod_speed = speed * speed_modifier
-
-
-    #     correction = (reflection - light_sensor.reflection()) * 2
+    while True:
+        # drive_sensor.reflection() > 0: # om sensorn inte ser helt sv
+        speed_modifier = collisionavoidence()
+        mod_speed = speed * speed_modifier
+        correction = (reflection - light_sensor.reflection()) * 2
         
-    #     # if correction >= 4 or correction <=-4:
-    #     #     speed_modifier *= 0.5
-    #     #     if correction <=-4:
-    #     #         mod*=-1
-    #     #     else:
-    #     #         mod = correction
-    #     #     modifier=0.5-(mod/100)
+        if correction >= 4 or correction <=-4:
+            speed_modifier *= 0.5
+            if correction <=-4:
+                mod*=-1
+            else:
+                mod = correction
+            modifier=0.5-(mod/100)
             
-    #     #     speed_modifier *= modifier
-    #     # print(correction)
+            speed_modifier *= modifier
+        print(correction)
 
-    #     robot.drive(mod_speed , -correction)
+        robot.drive(mod_speed , -correction)
         
 if __name__ == '__main__':
     sys.exit(main())
-
-### stop ###
-#Sebbes trashpile
-
-
-
-
