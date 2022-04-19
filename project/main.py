@@ -11,7 +11,7 @@ from pybricks.messaging import BluetoothMailboxServer, TextMailbox
 from pybricks import ev3brick as brick
 from pybricks.parameters import Button, Color
 
-import threading
+# import threading
 import sys
 import __init__
 
@@ -28,10 +28,10 @@ is_holding = False
 
 mod = 1 
 
-light = 60
-dark = 10
+light = 100
+dark = 18
 reflection = (light + dark) / 2
-speed = 200
+speed = 300
 
 color_to_fetch = Color.RED 
 
@@ -186,24 +186,27 @@ def main():
 
     while True:
         #Left_area('hej')
+        
         color_sensor.reflection() > 0
         speed_modifier = collisionavoidence()
-        mod_speed = speed * speed_modifier
-        correction = (reflection - color_sensor.reflection())
+        
+        correction = (reflection - color_sensor.reflection()) * 1.65
         print('color', color_sensor.reflection())
-        print('cor b',correction)
-        if correction >= 4 or correction <=-4:
+        
+        if correction >= 6 or correction <=-4:
             speed_modifier *= 0.2
             if correction <=-4:
-                mod=correction*(-1)
+                mod=correction*(-2)
             else:
-                mod = correction
-            modifier=0.5-(mod/100)
+                mod = correction*3.5
+            modifier=0.55-(mod/1000)
             
-            speed_modifier *= modifier
-        print('cor a',correction)
-
-        robot.drive(mod_speed , -correction)
+            speed_modifier -= modifier
+            print(modifier, speed_modifier)
+        #print('cor a',correction)
+        mod_speed = speed * (speed_modifier*(-1))
+        print(mod_speed)
+        robot.drive(mod_speed , correction)
 
     # print_text_to_screen(40, 50, "Testing", 10)
 
