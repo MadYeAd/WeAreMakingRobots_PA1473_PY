@@ -38,7 +38,18 @@ color_to_fetch = Color.RED
 light_red = 20
 light_yellow = 20
 
-def leftArea(areaColor):
+### Jeff wants feedback###
+timer_area=0
+
+def Left_area(curent_colore):
+    if light_sensor == curent_colore:
+        timer_area=0
+    else:
+        timer_area+=1
+    if timer_area == 200:
+        print_text_to_screen(1,1,'Robot has left the area', 2000)
+#### Jeff end ###        
+def leftArea(areaColor): ###...###
     if ColorSensor == areaColor:
         print('Robot has left sprcific area')
 
@@ -92,19 +103,19 @@ def pickup():
 
     #Ser till så att den håller uppe lasten när den väl har plockat upp 
 
-def motors_perform(action, speed_modifier):
-    if action == "hold":
-        robot.drive(0,0)
-    elif action == "forward":
-        # motor_right.run(360 * speed_modifier)
-        # motor_left.run(360 * speed_modifier)
-        robot.drive(36 * speed_modifier,0)
-    elif action == "left":
-        motor_right.run(180 * speed_modifier)
-        motor_left.run(-180 * speed_modifier)
-    elif action == "right":
-        motor_right.run(-180 * speed_modifier)
-        motor_left.run(180 * speed_modifier) 
+# def motors_perform(action, speed_modifier):
+#     if action == "hold":
+#         robot.drive(0,0)
+#     elif action == "forward":
+#         # motor_right.run(360 * speed_modifier)
+#         # motor_left.run(360 * speed_modifier)
+#         robot.drive(36 * speed_modifier,0)
+#     elif action == "left":
+#         motor_right.run(180 * speed_modifier)
+#         motor_left.run(-180 * speed_modifier)
+#     elif action == "right":
+#         motor_right.run(-180 * speed_modifier)
+#         motor_left.run(180 * speed_modifier) 
 
 def collisionavoidence():
     if ultrasonic_sensor.distance() < 200 and ultrasonic_sensor.distance() > 150:
