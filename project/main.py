@@ -191,7 +191,8 @@ def main():
         speed_modifier = collisionavoidence()
         
         correction = (reflection - color_sensor.reflection()) * 1.65
-        print('color', color_sensor.reflection())
+        
+        #print('color', color_sensor.reflection())
         
         if correction >= 6 or correction <=-4:
             speed_modifier *= 0.2
@@ -202,10 +203,10 @@ def main():
             modifier=0.55-(mod/1000)
             
             speed_modifier -= modifier
-            print(modifier, speed_modifier)
+            #print(modifier, speed_modifier)
         #print('cor a',correction)
         mod_speed = speed * (speed_modifier*(-1))
-        print(mod_speed)
+        #print(mod_speed)
         robot.drive(mod_speed , correction)
 
     # print_text_to_screen(40, 50, "Testing", 10)
