@@ -1,6 +1,4 @@
 #!/usr/bin/env pybricks-micropython
-from asyncio.windows_events import NULL
-from turtle import right
 from pybricks import robotics
 from pybricks.hubs import EV3Brick
 from pybricks.ev3devices import Motor, ColorSensor, UltrasonicSensor, TouchSensor
@@ -9,29 +7,31 @@ from pybricks.tools import wait, StopWatch
 from pybricks.robotics import DriveBase
 from pybricks.messaging import BluetoothMailboxServer, TextMailbox
 
+
 from pybricks import ev3brick as brick
 from pybricks.parameters import Button, Color
-from threading import Timer
 
+import threading
 import sys
 import __init__
-
 
 ev3 = EV3Brick()
 motor_left = Motor(Port.C, positive_direction = Direction.COUNTERCLOCKWISE, gears = [12, 20])
 motor_right = Motor(Port.B, positive_direction = Direction.COUNTERCLOCKWISE, gears = [12, 20])
 crane_motor = Motor(Port.A)
 robot = DriveBase(motor_left, motor_right, wheel_diameter= 47,axle_track= 128)
-light_sensor = ColorSensor(Port.S3)
+color_sensor = ColorSensor(Port.S3)
 ultrasonic_sensor  = UltrasonicSensor(Port.S4)
 touch_sensor = TouchSensor(Port.S1)
 
 is_holding = False
 
-light = 100
-dark = 9
+mod = 1 
+
+light = 60
+dark = 10
 reflection = (light + dark) / 2
-speed = 250
+speed = 200
 
 color_to_fetch = Color.RED 
 
@@ -39,15 +39,18 @@ light_red = 20
 light_yellow = 20
 
 ### Jeff wants feedback###
-timer_area=0
+timer_area = 0
 
-def Left_area(curent_colore):
-    if light_sensor == curent_colore:
+def Left_area(curent_color):
+    global timer_area
+    if color_sensor.color() == 'Color.RED':
         timer_area=0
     else:
         timer_area+=1
     if timer_area >= 200:
-        print_text_to_screen(1,1,'Robot has left the area', 2000)
+        # print_text_to_screen(1,1,'Robot has left the area', 2000)
+        hej='hej'
+    print(timer_area)
 #### Jeff end ###
 
 def left_area(areaColor):
@@ -55,25 +58,25 @@ def left_area(areaColor):
         print('Robot has left sprcific area')
 
 def returnToSpecArea(areaColor):
-    groundColor = light_sensor.color()
+    groundColor = color_sensor.color()
     turnSpeed = 90
     
     # Kör runt i en cirkel som blir större tills färgsensorn hittar rätt färg
     while groundColor != areaColor:
         robot.drive(50, turnSpeed)
         turnSpeed -= 1
-        groundColor = light_sensor.color()
+        groundColor = color_sensor.color()
     return "Tillbaka!"
 
 def ExitSpecArea(areaColor):
-    groundColor = light_sensor.color()
+    groundColor = color_sensor.color()
     turnSpeed = 90
 
     # Kör runt i en cirkel som blir större tills färgsensorn hittar en ny färg
     while groundColor == areaColor:
         robot.drive(50, turnSpeed)
         turnSpeed -= 0.1
-        groundColor = light_sensor.color()
+        groundColor = color_sensor.color()
     return "Ute!"
 
     ### SLUT DAVID ###
@@ -154,25 +157,22 @@ def color_button_change():
 
     if Button.LEFT in button:
         color_change(Color.RED)
-        print_text_to_screen(40, 50, "Fetching Red Item")
+        # print_text_to_screen(40, 50, "Fetching Red Item")
     elif Button.RIGHT in button: 
         color_change(Color.BLUE)
-        print_text_to_screen(40, 50, "Fetching Blue Item")
+        # print_text_to_screen(40, 50, "Fetching Blue Item")
 
 def print_text_to_screen(x_position, y_position, text, time_on_screen):
     """
     Print a text in the middle of the screen
     """
     ev3.screen.draw_text(x_position, y_position, text)
-    
-    clear_screen = Timer(time_on_screen, ev3.screen.draw_text(0,0,0))
-    clear_screen()
 
 def set_colorpanel(color_to_display, time_to_last = 0):
     """If time_to_last is set to 0, the light will stay on"""
     ev3.light.on(color_to_display)
 
-    clear_light = Timer(time_to_last, ev3.light.off)
+    
 
 def main(): 
     # while crane_motor.angle() > -180:
@@ -184,28 +184,28 @@ def main():
     #     crane_motor.run(100)
     # crane_motor.run(0)
 
-    # while True:
-    #     # drive_sensor.reflection() > 0: # om sensorn inte ser helt sv
-    #     speed_modifier = collisionavoidence()
-    #     mod_speed = speed * speed_modifier
-    #     correction = (reflection - light_sensor.reflection()) * 2
-        
-    #     if correction >= 4 or correction <=-4:
-    #         speed_modifier *= 0.5
-    #         if correction <=-4:
-    #             mod*=-1
-    #         else:
-    #             mod = correction
-    #         modifier=0.5-(mod/100)
+    while True:
+        #Left_area('hej')
+        color_sensor.reflection() > 0
+        speed_modifier = collisionavoidence()
+        mod_speed = speed * speed_modifier
+        correction = (reflection - color_sensor.reflection())
+        print('color', color_sensor.reflection())
+        print('cor b',correction)
+        if correction >= 4 or correction <=-4:
+            speed_modifier *= 0.2
+            if correction <=-4:
+                mod=correction*(-1)
+            else:
+                mod = correction
+            modifier=0.5-(mod/100)
             
-    #         speed_modifier *= modifier
-    #     print(correction)
+            speed_modifier *= modifier
+        print('cor a',correction)
 
-    #     robot.drive(mod_speed , -correction)
+        robot.drive(mod_speed , -correction)
 
-    print_text_to_screen(40, 50, "Testing", 10)
-    
-    print("test")
-        
+    # print_text_to_screen(40, 50, "Testing", 10)
+
 if __name__ == '__main__':
     sys.exit(main())
