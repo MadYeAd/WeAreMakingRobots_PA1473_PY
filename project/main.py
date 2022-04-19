@@ -7,13 +7,15 @@ from pybricks.ev3devices import Motor, ColorSensor, UltrasonicSensor, TouchSenso
 from pybricks.parameters import Port, Stop, Direction, Button, Color
 from pybricks.tools import wait, StopWatch
 from pybricks.robotics import DriveBase
-from pybricks.messaging import BluetoothMailboxClient, TextMailbox
+from pybricks.messaging import BluetoothMailboxServer, TextMailbox
 
 from pybricks import ev3brick as brick
 from pybricks.parameters import Button, Color
+from threading import Timer
 
 import sys
 import __init__
+
 
 ev3 = EV3Brick()
 motor_left = Motor(Port.C, positive_direction = Direction.COUNTERCLOCKWISE, gears = [12, 20])
@@ -33,17 +35,8 @@ speed = 250
 
 color_to_fetch = Color.RED 
 
-
-client = BluetoothMailboxClient()
-mbox = TextMailbox('greeting', client)
-client.connect("ev3dev")
-
-
-
 light_red = 20
 light_yellow = 20
-
-### DAVID ###
 
 def leftArea(areaColor):
     if ColorSensor == areaColor:
@@ -142,12 +135,32 @@ def color_change(color):
     color_to_fetch = color
 
 def color_button_change():
+    """ 
+    Color fetcher/changer with the help of the buttons.
+    """
     button = brick.buttons()
 
     if Button.LEFT in button:
         color_change(Color.RED)
+        print_text_to_screen(40, 50, "Fetching Red Item")
     elif Button.RIGHT in button: 
         color_change(Color.BLUE)
+        print_text_to_screen(40, 50, "Fetching Blue Item")
+
+def print_text_to_screen(x_position, y_position, text, time_on_screen):
+    """
+    Print a text in the middle of the screen
+    """
+    ev3.screen.draw_text(x_position, y_position, text)
+    
+    clear_screen = Timer(time_on_screen, ev3.screen.draw_text(0,0,0))
+    clear_screen()
+
+def set_colorpanel(color_to_display, time_to_last = 0):
+    """If time_to_last is set to 0, the light will stay on"""
+    ev3.light.on(color_to_display)
+
+    clear_light = Timer(time_to_last, ev3.light.off)
 
 def main(): 
     # while crane_motor.angle() > -180:
