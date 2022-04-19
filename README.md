@@ -4,6 +4,7 @@
 -- Replace with student information --
 * Adam Nguyen adng21@bth.se
 * Henric Caliban alo@bth.se
+* Anna Bergknut annanejla@gmail.com
 
 ## Project Description
 -- Place a short description of the project so that the reader know what the goal of the repository is --
