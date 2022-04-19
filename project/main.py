@@ -190,17 +190,17 @@ def main():
         color_sensor.reflection() > 0
         speed_modifier = collisionavoidence()
         
-        correction = (reflection - color_sensor.reflection()) * 1.65
+        correction = (reflection - color_sensor.reflection()) * 1.65 # Öka för att svänga mer
         
         #print('color', color_sensor.reflection())
         
-        if correction >= 6 or correction <=-4:
+        if correction >= 6 or correction <=-4: # 6(a) är hur långt in på linjen och -4(b) är när den svänger in mot linjen
             speed_modifier *= 0.2
-            if correction <=-4:
-                mod=correction*(-2)
+            if correction <=-4:# #Ska vara överäns med if-satsen (b)
+                mod=correction*(-2)#Öka om skarpare ytterkurver
             else:
-                mod = correction*3.5
-            modifier=0.55-(mod/1000)
+                mod = correction*3.5#Öka om skarpare innerkurvor
+            modifier=0.55-(mod/1000) # öka första variablenför att minska föränding av hastighet
             
             speed_modifier -= modifier
             #print(modifier, speed_modifier)
