@@ -46,11 +46,11 @@ def Left_area(curent_colore):
         timer_area=0
     else:
         timer_area+=1
-    if timer_area == 200:
+    if timer_area >= 200:
         print_text_to_screen(1,1,'Robot has left the area', 2000)
-#### Jeff end ###        
+#### Jeff end ###
 
-def leftArea(areaColor): ###...###
+def left_area(areaColor):
     if ColorSensor == areaColor:
         print('Robot has left sprcific area')
 
@@ -104,19 +104,19 @@ def pickup():
 
     #Ser till så att den håller uppe lasten när den väl har plockat upp 
 
-# def motors_perform(action, speed_modifier):
-#     if action == "hold":
-#         robot.drive(0,0)
-#     elif action == "forward":
-#         # motor_right.run(360 * speed_modifier)
-#         # motor_left.run(360 * speed_modifier)
-#         robot.drive(36 * speed_modifier,0)
-#     elif action == "left":
-#         motor_right.run(180 * speed_modifier)
-#         motor_left.run(-180 * speed_modifier)
-#     elif action == "right":
-#         motor_right.run(-180 * speed_modifier)
-#         motor_left.run(180 * speed_modifier) 
+def motors_perform(action, speed_modifier):
+    if action == "hold":
+        robot.drive(0,0)
+    elif action == "forward":
+        # motor_right.run(360 * speed_modifier)
+        # motor_left.run(360 * speed_modifier)
+        robot.drive(36 * speed_modifier,0)
+    elif action == "left":
+        motor_right.run(180 * speed_modifier)
+        motor_left.run(-180 * speed_modifier)
+    elif action == "right":
+        motor_right.run(-180 * speed_modifier)
+        motor_left.run(180 * speed_modifier) 
 
 def collisionavoidence():
     if ultrasonic_sensor.distance() < 200 and ultrasonic_sensor.distance() > 150:
@@ -184,24 +184,28 @@ def main():
     #     crane_motor.run(100)
     # crane_motor.run(0)
 
-    while True:
-        # drive_sensor.reflection() > 0: # om sensorn inte ser helt sv
-        speed_modifier = collisionavoidence()
-        mod_speed = speed * speed_modifier
-        correction = (reflection - light_sensor.reflection()) * 2
+    # while True:
+    #     # drive_sensor.reflection() > 0: # om sensorn inte ser helt sv
+    #     speed_modifier = collisionavoidence()
+    #     mod_speed = speed * speed_modifier
+    #     correction = (reflection - light_sensor.reflection()) * 2
         
-        if correction >= 4 or correction <=-4:
-            speed_modifier *= 0.5
-            if correction <=-4:
-                mod*=-1
-            else:
-                mod = correction
-            modifier=0.5-(mod/100)
+    #     if correction >= 4 or correction <=-4:
+    #         speed_modifier *= 0.5
+    #         if correction <=-4:
+    #             mod*=-1
+    #         else:
+    #             mod = correction
+    #         modifier=0.5-(mod/100)
             
-            speed_modifier *= modifier
-        print(correction)
+    #         speed_modifier *= modifier
+    #     print(correction)
 
-        robot.drive(mod_speed , -correction)
+    #     robot.drive(mod_speed , -correction)
+
+    print_text_to_screen(40, 50, "Testing", 10)
+    
+    print("test")
         
 if __name__ == '__main__':
     sys.exit(main())
