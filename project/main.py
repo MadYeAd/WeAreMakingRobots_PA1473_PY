@@ -11,8 +11,9 @@ from pybricks.messaging import BluetoothMailboxServer, TextMailbox
 from pybricks import ev3brick as brick
 from pybricks.parameters import Button, Color
 
-import threading
 import sys
+import threading as th
+import time
 import __init__
 
 ev3 = EV3Brick()
@@ -162,48 +163,54 @@ def color_button_change():
         color_change(Color.BLUE)
         # print_text_to_screen(40, 50, "Fetching Blue Item")
 
+def thread_text(x_position, y_position, text, time_on_screen):
+    th.Thread(target=print_text_to_screen, args=(x_position, y_position, text, time_on_screen)).start()
+
 def print_text_to_screen(x_position, y_position, text, time_on_screen):
     """
     Print a text in the middle of the screen
     """
     ev3.screen.draw_text(x_position, y_position, text)
+    time.sleep(time_on_screen)
+    print("end of thing")
+    ev3.screen.clear()
 
 def set_colorpanel(color_to_display, time_to_last = 0):
     """If time_to_last is set to 0, the light will stay on"""
     ev3.light.on(color_to_display)
 
-    
-
 def main(): 
-    # while crane_motor.angle() > -180:
-    #     print(crane_motor.angle())
-    #     crane_motor.run(-360)
-    # crane_motor.run(0)
-    
+    thread_text(40, 50, "Lifting", 0.5)
+
     # while crane_motor.angle() < 90:
     #     crane_motor.run(100)
     # crane_motor.run(0)
 
-    while True:
-        #Left_area('hej')
-        color_sensor.reflection() > 0
-        speed_modifier = collisionavoidence()
-        mod_speed = speed * speed_modifier
-        correction = (reflection - color_sensor.reflection())
-        print('color', color_sensor.reflection())
-        print('cor b',correction)
-        if correction >= 4 or correction <=-4:
-            speed_modifier *= 0.2
-            if correction <=-4:
-                mod=correction*(-1)
-            else:
-                mod = correction
-            modifier=0.5-(mod/100)
-            
-            speed_modifier *= modifier
-        print('cor a',correction)
+    # while crane_motor.angle() > -180:
+    #     # print(crane_motor.angle())
+    #     crane_motor.run(-360)
+    # crane_motor.run(0)
 
-        robot.drive(mod_speed , -correction)
+    # while True:
+    #     #Left_area('hej')
+    #     color_sensor.reflection() > 0
+    #     speed_modifier = collisionavoidence()
+    #     mod_speed = speed * speed_modifier
+    #     correction = (reflection - color_sensor.reflection())
+    #     print('color', color_sensor.reflection())
+    #     print('cor b',correction)
+    #     if correction >= 4 or correction <=-4:
+    #         speed_modifier *= 0.2
+    #         if correction <=-4:
+    #             mod=correction*(-1)
+    #         else:
+    #             mod = correction
+    #         modifier=0.5-(mod/100)
+            
+    #         speed_modifier *= modifier
+    #     print('cor a',correction)
+
+    #     robot.drive(mod_speed , -correction)
 
     # print_text_to_screen(40, 50, "Testing", 10)
 
