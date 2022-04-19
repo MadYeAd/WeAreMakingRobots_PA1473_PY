@@ -49,6 +49,7 @@ def Left_area(curent_colore):
     if timer_area == 200:
         print_text_to_screen(1,1,'Robot has left the area', 2000)
 #### Jeff end ###        
+
 def leftArea(areaColor): ###...###
     if ColorSensor == areaColor:
         print('Robot has left sprcific area')
