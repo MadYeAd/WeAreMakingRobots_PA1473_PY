@@ -163,7 +163,7 @@ def color_button_change():
         color_change(Color.BLUE)
         # print_text_to_screen(40, 50, "Fetching Blue Item")
 
-def thread_text(x_position, y_position, text, time_on_screen):
+def thread_text(x_position = 40, y_position = 50, text = "", time_on_screen = 0.5):
     th.Thread(target=print_text_to_screen, args=(x_position, y_position, text, time_on_screen)).start()
 
 def print_text_to_screen(x_position, y_position, text, time_on_screen):
