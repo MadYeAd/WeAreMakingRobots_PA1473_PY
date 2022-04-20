@@ -44,7 +44,7 @@ timer_area = 0
 
 def Left_area(curent_color):
     global timer_area
-    if color_sensor.color() == 'Color.RED':
+    if color_sensor.color() == 'Color.RED':#Temp color
         timer_area=0
     else:
         timer_area+=1
@@ -54,9 +54,9 @@ def Left_area(curent_color):
     print(timer_area)
 #### Jeff end ###
 
-def left_area(areaColor):
-    if ColorSensor == areaColor:
-        print('Robot has left sprcific area')
+# def left_area(areaColor):
+#     if ColorSensor == areaColor:
+#         print('Robot has left sprcific area')
 
 def returnToSpecArea(areaColor):
     groundColor = color_sensor.color()
