@@ -23,8 +23,8 @@ Sprint 1
 - [X] Be informed by what operation a truck is performing
 
 Sprint 2
-- [-] Return to the specified area in a safe manner
-- [-] Have a truck follow a specified path from multiple options
+- [ ] Return to the specified area in a safe manner
+- [ ] Have a truck follow a specified path from multiple options
 - [ ] Have a truck pick up an item from an elevated surface
 
 Sprint 3
