@@ -7,7 +7,6 @@ from pybricks.tools import wait, StopWatch
 from pybricks.robotics import DriveBase
 from pybricks.messaging import BluetoothMailboxServer, TextMailbox
 
-
 from pybricks import ev3brick as brick
 from pybricks.parameters import Button, Color
 
@@ -29,9 +28,9 @@ is_holding = False
 
 mod = 1 
 
-light = 100
-dark = 18
-reflection = (light + dark) / 2
+light = 90
+dark = 60
+avg_reflection = (light + dark) / 2
 speed = 300
 
 color_to_fetch = Color.RED 
@@ -39,7 +38,6 @@ color_to_fetch = Color.RED
 light_red = 20
 light_yellow = 20
 
-### Jeff wants feedback###
 timer_area = 0
 
 def Left_area(curent_color):
@@ -49,8 +47,7 @@ def Left_area(curent_color):
     else:
         timer_area+=1
     if timer_area >= 200:
-        # print_text_to_screen(1,1,'Robot has left the area', 2000)
-        hej='hej'
+        thread_text(40, 50, "Robot has left the area", 2)
     print(timer_area)
 #### Jeff end ###
 
@@ -82,7 +79,7 @@ def ExitSpecArea(areaColor):
 
     ### SLUT DAVID ###
 
-def pickup():
+def pickup_pallet():
     global is_holding
     #Här måste den först identifiera att den kan plocka upp, vänta på specifikationer
 
@@ -92,9 +89,9 @@ def pickup():
 
         #Lyfter tills kranen har lyft objektet 45 grader upp eller 
         #tills den tappar objektet
-        while crane_motor.angle() > -90 and touch_sensor.pressed():
+        while crane_motor.angle() > -360 and touch_sensor.pressed():
             
-            crane_motor.run(-100)
+            crane_motor.run(-200)
         crane_motor.run(0)
         
         #Om den fortfarande håller objektet registreras det
@@ -103,10 +100,15 @@ def pickup():
             #Om den tappade objektet går den ned igen
         else:
             while crane_motor.angle() <= 1:
-                crane_motor.run(100)
+                crane_motor.run(200)
             crane_motor.run(0)
-
     #Ser till så att den håller uppe lasten när den väl har plockat upp 
+
+def liftdown_pallet():
+    if is_holding and touch_sensor.pressed():
+
+        return
+    return
 
 def motors_perform(action, speed_modifier):
     if action == "hold":
@@ -125,77 +127,54 @@ def motors_perform(action, speed_modifier):
 def collisionavoidence():
     if ultrasonic_sensor.distance() < 200 and ultrasonic_sensor.distance() > 150:
         return 0.8
-        #motors_perform("forward", 0.4)
-        #print('Decreasing speed1')
     elif ultrasonic_sensor.distance() < 150 and ultrasonic_sensor.distance() > 120:
         return 0.6
-        #motors_perform("forward", 0.3)
-        #print('Decreasing speed2')
     elif ultrasonic_sensor.distance() < 120 and ultrasonic_sensor.distance() > 100:
         return 0.4
-        #motors_perform("forward", 0.2)
-        #print('Decreasing speed3')
     elif ultrasonic_sensor.distance() < 100 and ultrasonic_sensor.distance() > 70:
         return 0.2
-        #motors_perform("forward", 0.1)
-        #print('Decreasing speed4')
     elif ultrasonic_sensor.distance() < 70:
         return 0.0
-        #motors_perform("hold", 0)
-        print('Full stop')  
     else:
         return 1
-        #motors_perform("forward", 0.5)
 
 def color_change(color):
     color_to_fetch = color
 
 def color_button_change():
-    """ 
-    Color fetcher/changer with the help of the buttons.
-    """
+    """ Color fetcher/changer with the help of the buttons. """
     button = brick.buttons()
 
     if Button.LEFT in button:
         color_change(Color.RED)
-        # print_text_to_screen(40, 50, "Fetching Red Item")
+        thread_text(40, 50, "Fetching Blue Item", 2)
     elif Button.RIGHT in button: 
         color_change(Color.BLUE)
-        # print_text_to_screen(40, 50, "Fetching Blue Item")
+        thread_text(40, 50, "Fetching Blue Item", 2)
 
-def thread_text(x_position = 40, y_position = 50, text = "", time_on_screen = 0.5):
-    th.Thread(target=print_text_to_screen, args=(x_position, y_position, text, time_on_screen)).start()
+def thread_text(x_position = 40, y_position = 50, text = "", seconds_on_screen = 0.5):
+    """Threaded operation that print a text to the middle of the screen. It does not interupt any other functions."""
 
-def print_text_to_screen(x_position, y_position, text, time_on_screen):
-    """
-    Print a text in the middle of the screen
-    """
+    th.Thread(target=print_text_to_screen, args=(x_position, y_position, text, seconds_on_screen)).start()
+
+def print_text_to_screen(x_position, y_position, text, seconds_on_screen):
+    """Printing text to screen while stopping any on going operation until it has removed the text from the screen"""
+
     ev3.screen.draw_text(x_position, y_position, text)
-    time.sleep(time_on_screen)
-    print("end of thing")
+    time.sleep(seconds_on_screen)
     ev3.screen.clear()
 
-def set_colorpanel(color_to_display, time_to_last = 0):
-    """If time_to_last is set to 0, the light will stay on"""
-    ev3.light.on(color_to_display)
-
 def main(): 
-    thread_text(40, 50, "Lifting", 0.5)
-
-    # while crane_motor.angle() < 90:
-    #     crane_motor.run(100)
-    # crane_motor.run(0)
+    color_button_change()
 
     while True:
-        #Left_area('hej')
+        Left_area('hej')
         
-        color_sensor.reflection() > 0
+        # color_sensor.reflection() > 0
         speed_modifier = collisionavoidence()
         
-        correction = (reflection - color_sensor.reflection()) * 1.65 # Öka för att svänga mer
-        
-        #print('color', color_sensor.reflection())
-        
+        correction = (avg_reflection - color_sensor.reflection()) * 1.65 # Öka för att svänga mer
+
         if correction >= 6 or correction <=-4: # 6(a) är hur långt in på linjen och -4(b) är när den svänger in mot linjen
             speed_modifier *= 0.2
             if correction <=-4:# #Ska vara överäns med if-satsen (b)
@@ -205,13 +184,10 @@ def main():
             modifier=0.55-(mod/1000) # öka första variablenför att minska föränding av hastighet
             
             speed_modifier -= modifier
-            #print(modifier, speed_modifier)
-        #print('cor a',correction)
-        mod_speed = speed * (speed_modifier*(-1))
-        #print(mod_speed)
-        robot.drive(mod_speed , correction)
 
-    # print_text_to_screen(40, 50, "Testing", 10)
+        mod_speed = speed * -speed_modifier
+
+        robot.drive(mod_speed , correction)
 
 if __name__ == '__main__':
     sys.exit(main())
