@@ -207,7 +207,10 @@ def main():
             speed_modifier -= modifier
             #print(modifier, speed_modifier)
         #print('cor a',correction)
-        mod_speed = speed * (speed_modifier*(-1))
+        if speed_modifier < 0:
+            mod_speed = speed * (speed_modifier*(-1))
+        else:
+            mod_speed = speed * (speed_modifier)
         #print(mod_speed)
         robot.drive(mod_speed , correction)
 
