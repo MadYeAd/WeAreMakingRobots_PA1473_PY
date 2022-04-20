@@ -42,7 +42,7 @@ timer_area = 0
 
 def Left_area(curent_color):
     global timer_area
-    if color_sensor.color() == 'Color.RED':
+    if color_sensor.color() == 'Color.RED':#Temp color
         timer_area=0
     else:
         timer_area+=1
@@ -51,9 +51,9 @@ def Left_area(curent_color):
     print(timer_area)
 #### Jeff end ###
 
-def left_area(areaColor):
-    if ColorSensor == areaColor:
-        print('Robot has left sprcific area')
+# def left_area(areaColor):
+#     if ColorSensor == areaColor:
+#         print('Robot has left sprcific area')
 
 def returnToSpecArea(areaColor):
     groundColor = color_sensor.color()
@@ -127,14 +127,23 @@ def motors_perform(action, speed_modifier):
 def collisionavoidence():
     if ultrasonic_sensor.distance() < 200 and ultrasonic_sensor.distance() > 150:
         return 0.8
+        thread_text(40,50,'Decreasing speed1', 1)
     elif ultrasonic_sensor.distance() < 150 and ultrasonic_sensor.distance() > 120:
         return 0.6
+        thread_text(40,50,'Decreasing speed2', 1)
     elif ultrasonic_sensor.distance() < 120 and ultrasonic_sensor.distance() > 100:
         return 0.4
+        thread_text(40,50,'Decreasing speed3', 1)
     elif ultrasonic_sensor.distance() < 100 and ultrasonic_sensor.distance() > 70:
         return 0.2
+        #motors_perform("forward", 0.1)
+        thread_text(40,50,'Decreasing speed4', 1)
+        #print('Decreasing speed4')
     elif ultrasonic_sensor.distance() < 70:
         return 0.0
+        #motors_perform("hold", 0)
+        thread_text(40,50,'Full stop!', 1)
+        #print('Full stop')  
     else:
         return 1
 
@@ -184,6 +193,14 @@ def main():
             modifier=0.55-(mod/1000) # öka första variablenför att minska föränding av hastighet
             
             speed_modifier -= modifier
+            #print(modifier, speed_modifier)
+        #print('cor a',correction)
+        if speed_modifier < 0:
+            mod_speed = speed * (speed_modifier*(-1))
+        else:
+            mod_speed = speed * (speed_modifier)
+        #print(mod_speed)
+        robot.drive(mod_speed , correction)
 
         mod_speed = speed * -speed_modifier
 
