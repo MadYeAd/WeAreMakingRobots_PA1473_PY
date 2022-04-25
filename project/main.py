@@ -35,8 +35,21 @@ speed = 300
 
 color_to_fetch = Color.RED 
 
-light_red = 20
-light_yellow = 20
+#change color hsv value after measurement and reflectionColor.BLUE = ()
+Color.GREEN = ()
+Color.YELLOW = ()
+Color.RED = ()
+Color.WHITE = ()
+Color.BROWN = ()
+no_color = (0,0,0,0)
+#from left to right, (clear), (black), (Blue), (Green), (Yellow), (Red), (White), (Brown)
+color_reflection = [(0, 0),(1, 0), (2, 0), (3, 3), (4, 39), (5, 39), (6, 100), (7, 5)]
+
+
+detectable_colors = (Color.BLACK, Color.BLUE, Color.GREEN, Color.YELLOW, Color.RED, Color.WHITE, Color.BROWN)
+
+current_color_reflection = 0
+color_background_reflection = 9
 
 timer_area = 0
 
@@ -49,7 +62,6 @@ def Left_area(curent_color):
     if timer_area >= 200:
         thread_text(40, 50, "Robot has left the area", 2)
     print(timer_area)
-#### Jeff end ###
 
 # def left_area(areaColor):
 #     if ColorSensor == areaColor:
@@ -76,8 +88,6 @@ def ExitSpecArea(areaColor):
         turnSpeed -= 0.1
         groundColor = color_sensor.color()
     return "Ute!"
-
-    ### SLUT DAVID ###
 
 def pickup_pallet():
     global is_holding
@@ -136,14 +146,10 @@ def collisionavoidence():
         thread_text(40,50,'Decreasing speed3', 1)
     elif ultrasonic_sensor.distance() < 100 and ultrasonic_sensor.distance() > 70:
         return 0.2
-        #motors_perform("forward", 0.1)
         thread_text(40,50,'Decreasing speed4', 1)
-        #print('Decreasing speed4')
     elif ultrasonic_sensor.distance() < 70:
         return 0.0
-        #motors_perform("hold", 0)
         thread_text(40,50,'Full stop!', 1)
-        #print('Full stop')  
     else:
         return 1
 
@@ -173,38 +179,43 @@ def print_text_to_screen(x_position, y_position, text, seconds_on_screen):
     time.sleep(seconds_on_screen)
     ev3.screen.clear()
 
+def drive():
+    speed_modifier = collisionavoidence()
+    
+    correction = (avg_reflection - color_sensor.reflection()) * 1.65 # Öka för att svänga mer
+
+    if correction >= 6 or correction <=-4: # 6(a) är hur långt in på linjen och -4(b) är när den svänger in mot linjen
+        speed_modifier *= 0.2
+        if correction <=-4:# #Ska vara överäns med if-satsen (b)
+            mod=correction*(-2)#Öka om skarpare ytterkurver
+        else:
+            mod = correction*3.5#Öka om skarpare innerkurvor
+        modifier=0.55-(mod/1000) # öka första variablenför att minska föränding av hastighet
+        
+        speed_modifier -= modifier
+
+    if speed_modifier < 0:
+        mod_speed = speed * (speed_modifier*(-1))
+    else:
+        mod_speed = speed * (speed_modifier)
+    mod_speed = speed * -speed_modifier
+
+    robot.drive(mod_speed , correction)
+
+def detect_colorline():
+    color_sensor.color()
+
+    new_linereflection = color_reflection[color_sensor.color()]
+
+    return (new_linereflection + light) / 2
+
 def main(): 
     color_button_change()
 
     while True:
         Left_area('hej')
         
-        # color_sensor.reflection() > 0
-        speed_modifier = collisionavoidence()
-        
-        correction = (avg_reflection - color_sensor.reflection()) * 1.65 # Öka för att svänga mer
-
-        if correction >= 6 or correction <=-4: # 6(a) är hur långt in på linjen och -4(b) är när den svänger in mot linjen
-            speed_modifier *= 0.2
-            if correction <=-4:# #Ska vara överäns med if-satsen (b)
-                mod=correction*(-2)#Öka om skarpare ytterkurver
-            else:
-                mod = correction*3.5#Öka om skarpare innerkurvor
-            modifier=0.55-(mod/1000) # öka första variablenför att minska föränding av hastighet
-            
-            speed_modifier -= modifier
-            #print(modifier, speed_modifier)
-        #print('cor a',correction)
-        if speed_modifier < 0:
-            mod_speed = speed * (speed_modifier*(-1))
-        else:
-            mod_speed = speed * (speed_modifier)
-        #print(mod_speed)
-        robot.drive(mod_speed , correction)
-
-        mod_speed = speed * -speed_modifier
-
-        robot.drive(mod_speed , correction)
+        drive()
 
 if __name__ == '__main__':
     sys.exit(main())
