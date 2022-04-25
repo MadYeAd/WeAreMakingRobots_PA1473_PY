@@ -136,20 +136,25 @@ def motors_perform(action, speed_modifier):
 
 def collisionavoidence():
     if ultrasonic_sensor.distance() < 200 and ultrasonic_sensor.distance() > 150:
-        return 0.8
         thread_text(40,50,'Decreasing speed1', 1)
+        return 0.8
+        
     elif ultrasonic_sensor.distance() < 150 and ultrasonic_sensor.distance() > 120:
-        return 0.6
         thread_text(40,50,'Decreasing speed2', 1)
+        return 0.6 
+
     elif ultrasonic_sensor.distance() < 120 and ultrasonic_sensor.distance() > 100:
-        return 0.4
         thread_text(40,50,'Decreasing speed3', 1)
+        return 0.4
+
     elif ultrasonic_sensor.distance() < 100 and ultrasonic_sensor.distance() > 70:
-        return 0.2
         thread_text(40,50,'Decreasing speed4', 1)
+        return 0.2
+
     elif ultrasonic_sensor.distance() < 70:
-        return 0.0
         thread_text(40,50,'Full stop!', 1)
+        return 0.0
+        
     else:
         return 1
 
