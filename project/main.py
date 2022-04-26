@@ -215,12 +215,12 @@ def detect_colorline():
     return (new_linereflection + light) / 2
 
 def main(): 
-    color_button_change()
-
-    while True:
-        Left_area('hej')
-        
-        drive()
+    #color_button_change()
+    pickup_pallet()
+    #while True:
+    #    Left_area('hej')
+    #    
+    #    drive()
 
 if __name__ == '__main__':
     sys.exit(main())
