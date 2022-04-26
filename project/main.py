@@ -36,15 +36,14 @@ speed = 300
 color_to_fetch = Color.RED 
 
 #change color hsv value after measurement and reflectionColor.BLUE = ()
-Color.GREEN = ()
-Color.YELLOW = ()
-Color.RED = ()
-Color.WHITE = ()
-Color.BROWN = ()
+# Color.GREEN = ()
+# Color.YELLOW = ()
+# Color.RED = ()
+# Color.WHITE = ()
+# Color.BROWN = ()
 no_color = (0,0,0,0)
 #from left to right, (clear), (black), (Blue), (Green), (Yellow), (Red), (White), (Brown)
 color_reflection = [(0, 0),(1, 0), (2, 0), (3, 3), (4, 39), (5, 39), (6, 100), (7, 5)]
-
 
 detectable_colors = (Color.BLACK, Color.BLUE, Color.GREEN, Color.YELLOW, Color.RED, Color.WHITE, Color.BROWN)
 
@@ -55,13 +54,13 @@ timer_area = 0
 
 def Left_area(curent_color):
     global timer_area
-    if color_sensor.color() == 'Color.RED':#Temp color
+    if color_sensor.color() == curent_color:#Temp color
         timer_area=0
     else:
         timer_area+=1
     if timer_area >= 200:
         print_text_to_screen(40, 50, "Robot has left the area", 5)
-    print(timer_area)
+    #print(timer_area)
 
 # def left_area(areaColor):
 #     if ColorSensor == areaColor:
@@ -94,14 +93,16 @@ def pickup_pallet():
     #Här måste den först identifiera att den kan plocka upp, vänta på specifikationer
 
     # Checkar så att den inte redan har lyft upp objektet och ifall objektet är på "gaffeln"
-    if not is_holding and touch_sensor.pressed():
+    if not is_holding:
         #sätter graderna på 0 för att förenkla mätandet sedan
 
         #Lyfter tills kranen har lyft objektet 45 grader upp eller 
         #tills den tappar objektet
-        while crane_motor.angle() > -360 and touch_sensor.pressed():
+        while crane_motor.angle() > -360:
             
-            crane_motor.run(-200)
+            #cycle = 100  
+            crane_motor.dc(100)
+            print(crane_motor.angle())
         crane_motor.run(0)
         
         #Om den fortfarande håller objektet registreras det
@@ -110,8 +111,8 @@ def pickup_pallet():
             #Om den tappade objektet går den ned igen
         else:
             while crane_motor.angle() <= 1:
-                crane_motor.run(200)
-            crane_motor.run(0)
+                crane_motor.run_angle(60000, 500, Stop.HOLD, False)
+                crane_motor.run(0)
     #Ser till så att den håller uppe lasten när den väl har plockat upp 
 
 def liftdown_pallet():
@@ -218,9 +219,9 @@ def main():
     color_button_change()
 
     while True:
-        Left_area('hej')
+        # Left_area('hej')
         
-        drive()
+        pickup_pallet()
 
 if __name__ == '__main__':
     sys.exit(main())
