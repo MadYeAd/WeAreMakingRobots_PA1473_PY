@@ -36,6 +36,11 @@ speed = 300
 
 color_to_fetch = Color.RED 
 
+###
+red = ['red', (51,18,16), (36, 10, 9)]
+green = ['green', (7,31,5), (5,23,4)]
+my_colors = [red, green]
+
 
 
 POSSIBLE_COLORS = [Color.BLACK, Color.BLUE, Color.GREEN, Color.YELLOW, Color.RED, Color.White, Color.BROWN]
@@ -95,21 +100,25 @@ def pickup_pallet():
 
         #Lyfter tills kranen har lyft objektet 45 grader upp eller 
         #tills den tappar objektet
-        while crane_motor.angle() > -360:
+        while crane_motor.angle() < 100:
             
             #cycle = 100  
             crane_motor.dc(100)
             print(crane_motor.angle())
-        crane_motor.run(0)
-        
+        crane_motor.hold()
+        wait(2000)
+        #crane_motor.run(0)
+        print(touch_sensor.pressed())
         #Om den fortfarande håller objektet registreras det
         if touch_sensor.pressed():
             is_holding = True
             #Om den tappade objektet går den ned igen
         else:
-            while crane_motor.angle() <= 1:
-                crane_motor.run_angle(60000, -500, Stop.HOLD, False)
-                crane_motor.run(0)
+            while crane_motor.angle() >= 0:
+                print('hej')
+                print(crane_motor.angle())
+                crane_motor.run_angle(100, -500, Stop.HOLD, False)
+                crane_motor.hold()
     #Ser till så att den håller uppe lasten när den väl har plockat upp 
 
 def liftdown_pallet():
@@ -220,10 +229,8 @@ def main():
 
     while True:
         # Left_area('hej')
-        
-        # pickup_pallet()
-
-        print(color_sensor.color())
+        #crane_motor.run_angle(100, -500, Stop.HOLD, False)
+        pickup_pallet()
 
 if __name__ == '__main__':
     sys.exit(main())
