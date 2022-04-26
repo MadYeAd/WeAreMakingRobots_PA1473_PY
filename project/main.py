@@ -110,7 +110,7 @@ def pickup_pallet():
             #Om den tappade objektet går den ned igen
         else:
             while crane_motor.angle() <= 1:
-                crane_motor.run(200)
+                crane_motor.run_angle(200, 500, Stop.COAST, False)
             crane_motor.run(0)
     #Ser till så att den håller uppe lasten när den väl har plockat upp 
 
