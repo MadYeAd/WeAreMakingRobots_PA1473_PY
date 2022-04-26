@@ -60,7 +60,7 @@ def Left_area(curent_color):
     else:
         timer_area+=1
     if timer_area >= 200:
-        thread_text(40, 50, "Robot has left the area", 2)
+        print_text_to_screen(40, 50, "Robot has left the area", 5)
     print(timer_area)
 
 # def left_area(areaColor):
@@ -101,7 +101,7 @@ def pickup_pallet():
         #tills den tappar objektet
         while crane_motor.angle() > -360 and touch_sensor.pressed():
             
-            crane_motor.run_angle(200, 500, Stop.COAST, False)
+            crane_motor.run(-200)
         crane_motor.run(0)
         
         #Om den fortfarande håller objektet registreras det
@@ -110,7 +110,7 @@ def pickup_pallet():
             #Om den tappade objektet går den ned igen
         else:
             while crane_motor.angle() <= 1:
-                crane_motor.run_angle(200, 500, Stop.COAST, False)
+                crane_motor.run(200)
             crane_motor.run(0)
     #Ser till så att den håller uppe lasten när den väl har plockat upp 
 
@@ -154,7 +154,7 @@ def collisionavoidence():
     elif ultrasonic_sensor.distance() < 70:
         thread_text(40,50,'Full stop!', 1)
         return 0.0
-        
+
     else:
         return 1
 
@@ -215,12 +215,12 @@ def detect_colorline():
     return (new_linereflection + light) / 2
 
 def main(): 
-    #color_button_change()
-    pickup_pallet()
-    #while True:
-    #    Left_area('hej')
-    #    
-    #    drive()
+    color_button_change()
+
+    while True:
+        Left_area('hej')
+        
+        drive()
 
 if __name__ == '__main__':
     sys.exit(main())
