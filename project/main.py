@@ -1,4 +1,5 @@
 #!/usr/bin/env pybricks-micropython
+from turtle import color
 from pybricks import robotics
 from pybricks.hubs import EV3Brick
 from pybricks.ev3devices import Motor, ColorSensor, UltrasonicSensor, TouchSensor
@@ -35,17 +36,13 @@ speed = 300
 
 color_to_fetch = Color.RED 
 
-#change color hsv value after measurement and reflectionColor.BLUE = ()
-# Color.GREEN = ()
-# Color.YELLOW = ()
-# Color.RED = ()
-# Color.WHITE = ()
-# Color.BROWN = ()
-no_color = (0,0,0,0)
+
+
+POSSIBLE_COLORS = [Color.BLACK, Color.BLUE, Color.GREEN, Color.YELLOW, Color.RED, Color.White, Color.BROWN]
+CENTRAL_COLOR = Color.YELLOW
 #from left to right, (clear), (black), (Blue), (Green), (Yellow), (Red), (White), (Brown)
 color_reflection = [(0, 0),(1, 0), (2, 0), (3, 3), (4, 39), (5, 39), (6, 100), (7, 5)]
 
-detectable_colors = (Color.BLACK, Color.BLUE, Color.GREEN, Color.YELLOW, Color.RED, Color.WHITE, Color.BROWN)
 
 current_color_reflection = 0
 color_background_reflection = 9
@@ -111,7 +108,7 @@ def pickup_pallet():
             #Om den tappade objektet går den ned igen
         else:
             while crane_motor.angle() <= 1:
-                crane_motor.run_angle(60000, 500, Stop.HOLD, False)
+                crane_motor.run_angle(60000, -500, Stop.HOLD, False)
                 crane_motor.run(0)
     #Ser till så att den håller uppe lasten när den väl har plockat upp 
 
@@ -209,6 +206,9 @@ def drive():
     robot.drive(mod_speed , correction)
 
 def detect_colorline():
+    if color_sensor.color() not in POSSIBLE_COLORS:
+        return
+
     color_sensor.color()
 
     new_linereflection = color_reflection[color_sensor.color()]
@@ -221,7 +221,9 @@ def main():
     while True:
         # Left_area('hej')
         
-        pickup_pallet()
+        # pickup_pallet()
+
+        print(color_sensor.color())
 
 if __name__ == '__main__':
     sys.exit(main())
