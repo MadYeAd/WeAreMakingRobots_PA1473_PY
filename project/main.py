@@ -101,7 +101,7 @@ def pickup_pallet():
         #tills den tappar objektet
         while crane_motor.angle() > -360 and touch_sensor.pressed():
             
-            crane_motor.run(-200)
+            crane_motor.run_angle(200, 500, Stop.COAST, False)
         crane_motor.run(0)
         
         #Om den fortfarande håller objektet registreras det
