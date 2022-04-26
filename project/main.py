@@ -41,6 +41,14 @@ red = ['red', (51,18,16), (36, 10, 9)]
 green = ['green', (7,31,5), (5,23,4)]
 my_colors = [red, green]
 
+def rgb_to_color(color):
+    for i in my_colors:
+        if color[0] <= i[1][0] and color[0] >= i[2][0]:
+            if color[1] <= i[1][1] and color[1] >= i[2][1]:
+                if color[2] <= i[1][2] and color[2] >= i[2][2]:
+                    return i[0]
+    return(0)
+###
 
 
 POSSIBLE_COLORS = [Color.BLACK, Color.BLUE, Color.GREEN, Color.YELLOW, Color.RED, Color.White, Color.BROWN]
