@@ -24,6 +24,7 @@ def main():
     while True:
         # Left_area('hej')
         #crane_motor.run_angle(100, -500, Stop.HOLD, False)
+        drive_to_correct_colour()
         pickup_pallet()
 
 def rgb_to_color(color):
@@ -158,7 +159,6 @@ def color_change(color):
     color_to_fetch = color
 
 def color_button_change():
-    """ Temp """
     """ Color fetcher/changer with the help of the buttons. """
     button = brick.buttons()
 
@@ -184,7 +184,7 @@ def print_text_to_screen(x_position, y_position, text, seconds_on_screen):
 def drive():
     """ Folow a line with one sensor """ # are going to give more ditail
     speed_modifier = collisionavoidence()
-    correction = (avg_reflection - color_sensor.reflection()) * 1.65 # Öka för att svänga mer
+    correction = (detect_colorline() - color_sensor.reflection()) * 1.65 # Öka för att svänga mer # changed the av to detect_colorline so that it sould run nicely on all colour.
 
     if correction >= 6 or correction <=-4: # 6(a) är hur långt in på linjen och -4(b) är när den svänger in mot linjen
         speed_modifier *= 0.2
@@ -207,7 +207,7 @@ def drive():
 def detect_colorline():
     """ Temp """
     if color_sensor.color() not in POSSIBLE_COLORS:
-        return
+        return 0    # added 0 so that it sould stop if it dosen't have the a aceptible colour.
 
     color_sensor.color() # what is the use of this?
 
@@ -215,11 +215,11 @@ def detect_colorline():
 
     return (new_linereflection + light) / 2
 
-def drive_to_right_colour():
+def drive_to_correct_colour():
     """ Temp """
     temp = Color.Red
     if color_sensor.color() == temp:
-        drive()
+        drive() # ska svänga. vet ej om den kommer att göra det automatisk eller fall man ska hårdkåda den delen.
     else:
         robot.drive(speed, 0)
         wait(100)
