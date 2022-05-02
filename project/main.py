@@ -200,8 +200,8 @@ def print_text_to_screen(x_position, y_position, text, seconds_on_screen):
     ev3.screen.clear()
 
 def drive():
+    """ Folow a line with one sensor"""
     speed_modifier = collisionavoidence()
-    
     correction = (avg_reflection - color_sensor.reflection()) * 1.65 # Öka för att svänga mer
 
     if correction >= 6 or correction <=-4: # 6(a) är hur långt in på linjen och -4(b) är när den svänger in mot linjen
