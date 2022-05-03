@@ -1,4 +1,5 @@
 #!/usr/bin/env pybricks-micropython
+# from turtle import color
 from pybricks import robotics
 from pybricks.hubs import EV3Brick
 from pybricks.ev3devices import Motor, ColorSensor, UltrasonicSensor, TouchSensor
@@ -15,59 +16,43 @@ import threading as th
 import time
 import __init__
 
-ev3 = EV3Brick()
-motor_left = Motor(Port.C, positive_direction = Direction.COUNTERCLOCKWISE, gears = [12, 20])
-motor_right = Motor(Port.B, positive_direction = Direction.COUNTERCLOCKWISE, gears = [12, 20])
-crane_motor = Motor(Port.A)
-robot = DriveBase(motor_left, motor_right, wheel_diameter= 47,axle_track= 128)
-color_sensor = ColorSensor(Port.S3)
-ultrasonic_sensor  = UltrasonicSensor(Port.S4)
-touch_sensor = TouchSensor(Port.S1)
+""" Funktioner """
+def main(): 
+    """ Temp """
+    color_button_change()
 
-is_holding = False
+    while True:
+        # Left_area('hej')
+        #crane_motor.run_angle(100, -500, Stop.HOLD, False)
+        drive_to_correct_colour()
+        pickup_pallet()
 
-mod = 1 
-
-light = 90
-dark = 60
-avg_reflection = (light + dark) / 2
-speed = 300
-
-color_to_fetch = Color.RED 
-
-#change color hsv value after measurement and reflectionColor.BLUE = ()
-#Color.GREEN = ()
-#Color.YELLOW = ()
-#Color.RED = ()
-#Color.WHITE = ()
-#Color.BROWN = ()
-no_color = (0,0,0,0)
-#from left to right, (clear), (black), (Blue), (Green), (Yellow), (Red), (White), (Brown)
-color_reflection = [(0, 0),(1, 0), (2, 0), (3, 3), (4, 39), (5, 39), (6, 100), (7, 5)]
-
-
-detectable_colors = (Color.BLACK, Color.BLUE, Color.GREEN, Color.YELLOW, Color.RED, Color.WHITE, Color.BROWN)
-
-current_color_reflection = 0
-color_background_reflection = 9
-
-timer_area = 0
+def rgb_to_color(color):
+    """ Temp """
+    for i in my_colors:
+        if color[0] <= i[1][0] and color[0] >= i[2][0]:
+            if color[1] <= i[1][1] and color[1] >= i[2][1]:
+                if color[2] <= i[1][2] and color[2] >= i[2][2]:
+                    return i[0]
+    return(0)
 
 def Left_area(curent_color):
+    """ Temp """
     global timer_area
-    if color_sensor.color() == 'Color.RED':#Temp color
+    if color_sensor.color() == curent_color:#Temp color
         timer_area=0
     else:
         timer_area+=1
     if timer_area >= 200:
-        thread_text(40, 50, "Robot has left the area", 2)
-    print(timer_area)
+        print_text_to_screen(40, 50, "Robot has left the area", 5)
+    #print(timer_area)
 
 # def left_area(areaColor):
 #     if ColorSensor == areaColor:
 #         print('Robot has left sprcific area')
 
 def returnToSpecArea(areaColor):
+    """ Temp """
     groundColor = color_sensor.color()
     turnSpeed = 90
     
@@ -79,6 +64,7 @@ def returnToSpecArea(areaColor):
     return "Tillbaka!"
 
 def ExitSpecArea(areaColor):
+    """ Temp """
     groundColor = color_sensor.color()
     turnSpeed = 90
 
@@ -90,37 +76,46 @@ def ExitSpecArea(areaColor):
     return "Ute!"
 
 def pickup_pallet():
+    """ Temp """
     global is_holding
     #Här måste den först identifiera att den kan plocka upp, vänta på specifikationer
 
     # Checkar så att den inte redan har lyft upp objektet och ifall objektet är på "gaffeln"
-    if not is_holding and touch_sensor.pressed():
+    if not is_holding:
         #sätter graderna på 0 för att förenkla mätandet sedan
 
         #Lyfter tills kranen har lyft objektet 45 grader upp eller 
         #tills den tappar objektet
-        while crane_motor.angle() > -360 and touch_sensor.pressed():
+        while crane_motor.angle() < 100:
             
-            crane_motor.run_angle(200, 500, Stop.COAST, False)
-        crane_motor.run(0)
-        
+            #cycle = 100  
+            crane_motor.dc(100)
+            print(crane_motor.angle())
+        crane_motor.hold()
+        wait(2000)
+        #crane_motor.run(0)
+        print(touch_sensor.pressed())
         #Om den fortfarande håller objektet registreras det
         if touch_sensor.pressed():
             is_holding = True
             #Om den tappade objektet går den ned igen
         else:
-            while crane_motor.angle() <= 1:
-                crane_motor.run_angle(200, 500, Stop.COAST, False)
-            crane_motor.run(0)
+            while crane_motor.angle() >= 0:
+                print('hej')
+                print(crane_motor.angle())
+                crane_motor.run_angle(100, -500, Stop.HOLD, False)
+                crane_motor.hold()
     #Ser till så att den håller uppe lasten när den väl har plockat upp 
 
 def liftdown_pallet():
+    """ Temp """
     if is_holding and touch_sensor.pressed():
 
         return
     return
 
 def motors_perform(action, speed_modifier):
+    """ Temp """
     if action == "hold":
         robot.drive(0,0)
     elif action == "forward":
@@ -135,6 +130,7 @@ def motors_perform(action, speed_modifier):
         motor_left.run(180 * speed_modifier) 
 
 def collisionavoidence():
+    """ Temp """
     if ultrasonic_sensor.distance() < 200 and ultrasonic_sensor.distance() > 150:
         thread_text(40,50,'Decreasing speed1', 1)
         return 0.8
@@ -154,11 +150,12 @@ def collisionavoidence():
     elif ultrasonic_sensor.distance() < 70:
         thread_text(40,50,'Full stop!', 1)
         return 0.0
-        
+
     else:
         return 1
 
 def color_change(color):
+    """ Temp """
     color_to_fetch = color
 
 def color_button_change():
@@ -185,9 +182,9 @@ def print_text_to_screen(x_position, y_position, text, seconds_on_screen):
     ev3.screen.clear()
 
 def drive():
+    """ Follow a line with one sensor """ # are going to give more ditail
     speed_modifier = collisionavoidence()
-    
-    correction = (avg_reflection - color_sensor.reflection()) * 1.65 # Öka för att svänga mer
+    correction = (detect_colorline() - color_sensor.reflection()) * 1.65 # Öka för att svänga mer # changed the av to detect_colorline so that it sould run nicely on all colour.
 
     if correction >= 6 or correction <=-4: # 6(a) är hur långt in på linjen och -4(b) är när den svänger in mot linjen
         speed_modifier *= 0.2
@@ -208,19 +205,62 @@ def drive():
     robot.drive(mod_speed , correction)
 
 def detect_colorline():
-    color_sensor.color()
+    """ Temp """
+    if color_sensor.color() not in POSSIBLE_COLORS:
+        return 0    # added 0 so that it sould stop if it dosen't have the a aceptible colour.
+
+    color_sensor.color() # what is the use of this?
 
     new_linereflection = color_reflection[color_sensor.color()]
 
     return (new_linereflection + light) / 2
 
-def main(): 
-    #color_button_change()
-    pickup_pallet()
-    #while True:
-    #    Left_area('hej')
-    #    
-    #    drive()
+def drive_to_correct_colour():
+    """ Temp """
+    drive()
+    temp = Color.RED
+    if color_sensor.color() == temp:
+        drive() # ska svänga. vet ej om den kommer att göra det automatisk eller fall man ska hårdkåda den delen.
+    else:
+        robot.drive(speed, 0)
+        wait(1000)
+        drive()
 
+
+""" Variabler """
+ev3 = EV3Brick()
+motor_left = Motor(Port.C, positive_direction = Direction.COUNTERCLOCKWISE, gears = [12, 20])
+motor_right = Motor(Port.B, positive_direction = Direction.COUNTERCLOCKWISE, gears = [12, 20])
+crane_motor = Motor(Port.A)
+robot = DriveBase(motor_left, motor_right, wheel_diameter= 47,axle_track= 128)
+color_sensor = ColorSensor(Port.S3)
+ultrasonic_sensor  = UltrasonicSensor(Port.S4)
+touch_sensor = TouchSensor(Port.S1)
+
+is_holding = False
+
+mod = 1 
+speed = 300
+light = 80
+dark = 20
+avg_reflection = (light + dark) / 2
+
+color_to_fetch = Color.RED 
+
+POSSIBLE_COLORS = [Color.BLACK, Color.BLUE, Color.GREEN, Color.YELLOW, Color.RED, Color.BROWN]
+CENTRAL_COLOR = Color.YELLOW
+#from left to right, (clear), (black), (Blue), (Green), (Yellow), (Red), (Brown)
+color_reflection = [(0, 0),(1, 0), (2, 0), (3, 3), (4, 39), (5, 39), (7, 5)]
+
+
+current_color_reflection = 0
+color_background_reflection = 9
+timer_area = 0
+
+red = ['red', (51,18,16), (36, 10, 9)]
+green = ['green', (7,31,5), (5,23,4)]
+my_colors = [red, green]
+
+""" if Main """
 if __name__ == '__main__':
     sys.exit(main())
