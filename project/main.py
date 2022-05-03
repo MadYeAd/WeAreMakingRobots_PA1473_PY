@@ -202,7 +202,11 @@ def drive():
     robot.drive(mod_speed , correction)
 
 def detect_colorline():
-    new_linereflection = color_reflection[color_sensor.color()]
+    if color_sensor.color() not in possible_colors:
+        return
+
+    current_color_detected = color_sensor.color()
+    new_linereflection = color_reflection[str(current_color_detected)]
 
     return (new_linereflection + light) / 2
 
@@ -242,8 +246,8 @@ avg_reflection = (light + dark) / 2
 color_to_fetch = Color.RED 
 
 #from left to right, (clear), (black), (Blue), (Green), (Yellow), (Red), (White), (Brown)
-color_reflection = [(Color.BLACK, 9), (Color.BLUE, 0), (Color.GREEN, 3), (Color.YELLOW, 59), (Color.RED, 39), (Color.WHITE, 100), (Color.BROWN, 5)]
-
+color_reflection = {Color.BLACK: 9, Color.BLUE: 0, Color.GREEN: 3, Color.YELLOW: 59, Color.RED: 39, Color.WHITE: 100, Color.BROWN: 5}
+possible_colors = [Color.BLACK, Color.Blue]
 
 current_color_reflection = 0
 color_background_reflection = 9
@@ -256,3 +260,4 @@ my_colors = [red, green]
 """ if Main """
 if __name__ == '__main__':
     sys.exit(main())
+
