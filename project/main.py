@@ -283,11 +283,7 @@ touch_sensor = TouchSensor(Port.S1)
 is_holding = False
 
 mod = 1 
-<<<<<<< HEAD
-speed = 10
-=======
 speed = 50
->>>>>>> ee3ea07910ee0a41f46bed8f21f9d36212a01ccf
 dark = 36
 
 color_to_fetch = Color.RED 
