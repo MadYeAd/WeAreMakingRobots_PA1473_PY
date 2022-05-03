@@ -18,11 +18,11 @@ import __init__
 def main(): 
     """ Temp """
     #color_button_change()
-    check_pallet(3, 1, False)
-    #while True:
+    #check_pallet(3, 1, False)
+    # while True:
         # Left_area('hej')
         #crane_motor.run_angle(100, -500, Stop.HOLD, False)
-        #drive_to_correct_colour()
+        # drive_to_correct_colour()
         #pickup_pallet()
 
     color_button_change()
@@ -31,7 +31,7 @@ def main():
         print(color_sensor.color())
         # Left_area('hej')
         #crane_motor.run_angle(100, -500, Stop.HOLD, False)
-        # drive_to_correct_colour()
+        drive_to_correct_colour()
         # pickup_pallet()
 
 def rgb_to_color(color):
@@ -245,7 +245,7 @@ def detect_colorline():
 
 def drive_to_correct_colour():
     """ Temp """
-    temp = Color.RED
+    temp = Color.YELLOW
     current_color = color_sensor.color
     if current_color != color_sensor.color:
         if color_sensor.color() == temp:
