@@ -17,7 +17,6 @@ import __init__
 """ Funktioner """
 def main(): 
     """ Temp """
-<<<<<<< HEAD
     #color_button_change()
     check_pallet(3, 1, False)
     #while True:
@@ -26,7 +25,6 @@ def main():
         #drive_to_correct_colour()
         #pickup_pallet()
 
-=======
     color_button_change()
 
     while True:
@@ -35,7 +33,6 @@ def main():
         #crane_motor.run_angle(100, -500, Stop.HOLD, False)
         # drive_to_correct_colour()
         # pickup_pallet()
->>>>>>> 7139b34c2cc871d174cf5017dcee4631dde3c68f
 
 def rgb_to_color(color):
     """ Temp """
