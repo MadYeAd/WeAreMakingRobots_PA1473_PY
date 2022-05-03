@@ -34,14 +34,22 @@ def main():
         # drive_to_correct_colour()
         # pickup_pallet()
 
-def rgb_to_color(color):
-    """ Temp """
-    for i in my_colors:
-        if color[0] <= i[1][0] and color[0] >= i[2][0]:
-            if color[1] <= i[1][1] and color[1] >= i[2][1]:
-                if color[2] <= i[1][2] and color[2] >= i[2][2]:
-                    return i[0]
-    return(0)
+def rgb_to_color(color, last_color=None):
+    if max(color) == color[0]:
+        result = 'red'
+        if color[1]*1.3 > color[0]:
+            result = 'brown'
+    elif max(color) == color[1]:
+        result = 'green'
+    elif max(color) == color[2]:
+        result = 'blue'
+        if color[0]*1.8 > color[2]:
+            result = 'purple'
+    elif max(color) < 10:
+        result = 'black'
+    else:
+        result = last_color
+    return result
 
 def Left_area(curent_color):
     """ Temp """
