@@ -209,11 +209,15 @@ def detect_colorline():
 def drive_to_correct_colour():
     """ Temp """
     temp = Color.RED
-    if color_sensor.color() == temp:
-        drive() # ska svänga. vet ej om den kommer att göra det automatisk eller fall man ska hårdkåda den delen.
+    current_color = color_sensor.color
+    if current_color != color_sensor.color:
+        if color_sensor.color() == temp:
+            drive() # ska svänga. vet ej om den kommer att göra det automatisk eller fall man ska hårdkåda den delen.
+        else:
+            robot.drive(speed, 0)
+            wait(100)
+            drive()
     else:
-        robot.drive(speed, 0)
-        wait(100)
         drive()
 
 
@@ -239,6 +243,7 @@ color_to_fetch = Color.RED
 
 #from left to right, (clear), (black), (Blue), (Green), (Yellow), (Red), (White), (Brown)
 color_reflection = [(Color.BLACK, 9), (Color.BLUE, 0), (Color.GREEN, 3), (Color.YELLOW, 59), (Color.RED, 39), (Color.WHITE, 100), (Color.BROWN, 5)]
+
 
 current_color_reflection = 0
 color_background_reflection = 9
