@@ -28,7 +28,6 @@ def main():
     color_button_change()
 
     while True:
-        print(color_sensor.color())
         # Left_area('hej')
         #crane_motor.run_angle(100, -500, Stop.HOLD, False)
         drive_to_correct_colour()
@@ -251,9 +250,9 @@ def detect_colorline():
         return
 
     current_color_detected = color_sensor.color()
-    new_linereflection = color_reflection[str(current_color_detected)]
+    new_linereflection = color_reflection[current_color_detected]
 
-    return (new_linereflection + light) / 2
+    return (new_linereflection + dark) / 2
 
 def drive_to_correct_colour():
     """ Temp """
@@ -284,15 +283,13 @@ is_holding = False
 
 mod = 1 
 speed = 300
-light = 80
-dark = 20
-avg_reflection = (light + dark) / 2
+dark = 36
 
 color_to_fetch = Color.RED 
 
 #from left to right, (clear), (black), (Blue), (Green), (Yellow), (Red), (White), (Brown)
 color_reflection = {Color.BLACK: 9, Color.BLUE: 0, Color.GREEN: 3, Color.YELLOW: 59, Color.RED: 39, Color.WHITE: 100, Color.BROWN: 5}
-possible_colors = [Color.BLACK, Color.Blue]
+possible_colors = [Color.BLACK, Color.BLUE]
 
 current_color_reflection = 0
 color_background_reflection = 9
