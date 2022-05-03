@@ -1,15 +1,13 @@
 #!/usr/bin/env pybricks-micropython
-# from turtle import color
 from pybricks import robotics
 from pybricks.hubs import EV3Brick
 from pybricks.ev3devices import Motor, ColorSensor, UltrasonicSensor, TouchSensor
-from pybricks.parameters import Port, Stop, Direction, Button, Color
+from pybricks.parameters import Port, Stop, Direction, Button
+from pybricks.parameters import Color
 from pybricks.tools import wait, StopWatch
 from pybricks.robotics import DriveBase
 from pybricks.messaging import BluetoothMailboxServer, TextMailbox
-
 from pybricks import ev3brick as brick
-from pybricks.parameters import Button, Color
 
 import sys
 import threading as th
@@ -19,6 +17,7 @@ import __init__
 """ Funktioner """
 def main(): 
     """ Temp """
+<<<<<<< HEAD
     #color_button_change()
     check_pallet(3, 1, False)
     #while True:
@@ -27,6 +26,16 @@ def main():
         #drive_to_correct_colour()
         #pickup_pallet()
 
+=======
+    color_button_change()
+
+    while True:
+        print(color_sensor.color())
+        # Left_area('hej')
+        #crane_motor.run_angle(100, -500, Stop.HOLD, False)
+        # drive_to_correct_colour()
+        # pickup_pallet()
+>>>>>>> 7139b34c2cc871d174cf5017dcee4631dde3c68f
 
 def rgb_to_color(color):
     """ Temp """
@@ -102,8 +111,6 @@ def pickup_pallet():
             #Om den tappade objektet går den ned igen
         else:
             while crane_motor.angle() >= 0:
-                print('hej')
-                print(crane_motor.angle())
                 crane_motor.run_angle(100, -500, Stop.HOLD, False)
                 crane_motor.hold()
     #Ser till så att den håller uppe lasten när den väl har plockat upp 
@@ -212,7 +219,7 @@ def print_text_to_screen(x_position, y_position, text, seconds_on_screen):
     ev3.screen.clear()
 
 def drive():
-    """ Follow a line with one sensor """ # are going to give more ditail
+    """ Folow a line with one sensor """ # are going to give more ditail
     speed_modifier = collisionavoidence()
     correction = (detect_colorline() - color_sensor.reflection()) * 1.65 # Öka för att svänga mer # changed the av to detect_colorline so that it sould run nicely on all colour.
 
@@ -235,25 +242,22 @@ def drive():
     robot.drive(mod_speed , correction)
 
 def detect_colorline():
-    """ Temp """
-    if color_sensor.color() not in POSSIBLE_COLORS:
-        return 0    # added 0 so that it sould stop if it dosen't have the a aceptible colour.
-
-    color_sensor.color() # what is the use of this?
-
     new_linereflection = color_reflection[color_sensor.color()]
 
     return (new_linereflection + light) / 2
 
 def drive_to_correct_colour():
     """ Temp """
-    drive()
     temp = Color.RED
-    if color_sensor.color() == temp:
-        drive() # ska svänga. vet ej om den kommer att göra det automatisk eller fall man ska hårdkåda den delen.
+    current_color = color_sensor.color
+    if current_color != color_sensor.color:
+        if color_sensor.color() == temp:
+            drive() # ska svänga. vet ej om den kommer att göra det automatisk eller fall man ska hårdkåda den delen.
+        else:
+            robot.drive(speed, 0)
+            wait(100)
+            drive()
     else:
-        robot.drive(speed, 0)
-        wait(1000)
         drive()
 
 
@@ -277,10 +281,8 @@ avg_reflection = (light + dark) / 2
 
 color_to_fetch = Color.RED 
 
-POSSIBLE_COLORS = [Color.BLACK, Color.BLUE, Color.GREEN, Color.YELLOW, Color.RED, Color.BROWN]
-CENTRAL_COLOR = Color.YELLOW
-#from left to right, (clear), (black), (Blue), (Green), (Yellow), (Red), (Brown)
-color_reflection = [(0, 0),(1, 0), (2, 0), (3, 3), (4, 39), (5, 39), (7, 5)]
+#from left to right, (clear), (black), (Blue), (Green), (Yellow), (Red), (White), (Brown)
+color_reflection = [(Color.BLACK, 9), (Color.BLUE, 0), (Color.GREEN, 3), (Color.YELLOW, 59), (Color.RED, 39), (Color.WHITE, 100), (Color.BROWN, 5)]
 
 
 current_color_reflection = 0
