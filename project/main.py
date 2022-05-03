@@ -36,14 +36,16 @@ def main():
 def rgb_to_color(color, last_color=None):
     if max(color) == color[0]:
         result = 'red'
-        if color[1]*1.3 > color[0]:
+        if color[1]*1.5 > color[0]:
             result = 'brown'
     elif max(color) == color[1]:
         result = 'green'
+        if color[0]*2 > color[1]:
+            result = 'brown'
     elif max(color) == color[2]:
-        result = 'blue'
-        if color[0]*1.8 > color[2]:
-            result = 'purple'
+        result = 'purple'
+        if color[0]*2 > color[2]:
+            result = 'blue'
     elif max(color) < 10:
         result = 'black'
     else:
