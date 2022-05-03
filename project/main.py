@@ -217,12 +217,13 @@ def detect_colorline():
 
 def drive_to_correct_colour():
     """ Temp """
-    temp = Color.Red
+    temp = Color.RED
     if color_sensor.color() == temp:
         drive() # ska svänga. vet ej om den kommer att göra det automatisk eller fall man ska hårdkåda den delen.
     else:
         robot.drive(speed, 0)
         wait(100)
+        drive()
 
 
 """ Variabler """
