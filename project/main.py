@@ -36,11 +36,11 @@ speed = 300
 color_to_fetch = Color.RED 
 
 #change color hsv value after measurement and reflectionColor.BLUE = ()
-Color.GREEN = ()
-Color.YELLOW = ()
-Color.RED = ()
-Color.WHITE = ()
-Color.BROWN = ()
+#Color.GREEN = ()
+#Color.YELLOW = ()
+#Color.RED = ()
+#Color.WHITE = ()
+#Color.BROWN = ()
 no_color = (0,0,0,0)
 #from left to right, (clear), (black), (Blue), (Green), (Yellow), (Red), (White), (Brown)
 color_reflection = [(0, 0),(1, 0), (2, 0), (3, 3), (4, 39), (5, 39), (6, 100), (7, 5)]
