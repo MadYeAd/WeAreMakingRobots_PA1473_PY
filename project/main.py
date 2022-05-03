@@ -259,6 +259,7 @@ def drive_to_correct_colour():
         if color_sensor.color() == temp:
             drive() # ska svänga. vet ej om den kommer att göra det automatisk eller fall man ska hårdkåda den delen.
         else:
+            print("going past line")
             robot.drive(speed, 0)
             wait(100)
             drive()
@@ -279,15 +280,8 @@ touch_sensor = TouchSensor(Port.S1)
 is_holding = False
 
 mod = 1 
-<<<<<<< HEAD
 speed = 50
-light = 80
-dark = 20
-avg_reflection = (light + dark) / 2
-=======
-speed = 300
 dark = 36
->>>>>>> ff3844f00f6ea83e21bb54d87daa625973fd2dd2
 
 color_to_fetch = Color.RED 
 
