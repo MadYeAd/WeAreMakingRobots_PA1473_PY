@@ -253,10 +253,12 @@ def detect_colorline():
 
 def drive_to_correct_colour():
     """ Temp """
+    print("im in drive to correct colour")
     temp = Color.YELLOW
     current_color = color_sensor.color
     if current_color != color_sensor.color:
         if color_sensor.color() == temp:
+            print("i need to turn now")
             drive() # ska svänga. vet ej om den kommer att göra det automatisk eller fall man ska hårdkåda den delen.
         else:
             print("going past line")
@@ -264,6 +266,7 @@ def drive_to_correct_colour():
             wait(100)
             drive()
     else:
+        print("i folow line now")
         drive()
 
 
