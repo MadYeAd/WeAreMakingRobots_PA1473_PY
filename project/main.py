@@ -33,7 +33,11 @@ def main():
         # drive_to_correct_colour()
         # pickup_pallet()
 
-def rgb_to_color(color, last_color=None):
+
+def rgb_to_color(color, last_color=None): 
+    
+    #Den här borde fungera
+
     if max(color) == color[0]:
         result = 'red'
         if color[1]*1.5 > color[0]:
@@ -43,9 +47,9 @@ def rgb_to_color(color, last_color=None):
         if color[0]*2 > color[1]:
             result = 'brown'
     elif max(color) == color[2]:
-        result = 'purple'
-        if color[0]*2 > color[2]:
-            result = 'blue'
+        result = 'blue'
+        if color[2] < 30:
+            result = 'purple'
     elif max(color) < 10:
         result = 'black'
     else:
