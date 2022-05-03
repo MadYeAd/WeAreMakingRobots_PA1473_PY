@@ -25,12 +25,12 @@ def main():
         # drive_to_correct_colour()
         #pickup_pallet()
 
-    color_button_change()
 
     while True:
+        color_button_change()
         # Left_area('hej')
         #crane_motor.run_angle(100, -500, Stop.HOLD, False)
-        drive_to_correct_colour()
+        # drive_to_correct_colour()
         # pickup_pallet()
 
 def rgb_to_color(color, last_color=None):
@@ -205,10 +205,10 @@ def color_button_change():
 
     if Button.LEFT in button:
         color_change(Color.RED)
-        thread_text(40, 50, "Fetching Blue Item", 2)
+        thread_text(10, 50, "Fetching Red Item", 2)
     elif Button.RIGHT in button: 
         color_change(Color.BLUE)
-        thread_text(40, 50, "Fetching Blue Item", 2)
+        thread_text(10, 50, "Fetching Blue Item", 2)
 
 def thread_text(x_position = 40, y_position = 50, text = "", seconds_on_screen = 0.5):
     """Threaded operation that print a text to the middle of the screen. It does not interupt any other functions."""
@@ -246,10 +246,7 @@ def drive():
     robot.drive(mod_speed , correction)
 
 def detect_colorline():
-    if color_sensor.color() not in possible_colors:
-        return
-
-    current_color_detected = color_sensor.color()
+    current_color_detected = rgb_to_color()
     new_linereflection = color_reflection[current_color_detected]
 
     return (new_linereflection + dark) / 2
@@ -282,14 +279,16 @@ touch_sensor = TouchSensor(Port.S1)
 is_holding = False
 
 mod = 1 
-speed = 300
+speed = 10
 dark = 36
 
 color_to_fetch = Color.RED 
 
 #from left to right, (clear), (black), (Blue), (Green), (Yellow), (Red), (White), (Brown)
 color_reflection = {Color.BLACK: 9, Color.BLUE: 0, Color.GREEN: 3, Color.YELLOW: 59, Color.RED: 39, Color.WHITE: 100, Color.BROWN: 5}
-possible_colors = [Color.BLACK, Color.BLUE]
+
+color_reflection_dict = {"black": 9, "blue": 0, "green": 3, "yellow": 59, "red": 39, "white": 100, "brown": 5}
+possible_color = ["black", "blue"] #...
 
 current_color_reflection = 0
 color_background_reflection = 9
