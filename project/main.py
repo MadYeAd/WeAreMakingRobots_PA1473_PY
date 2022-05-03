@@ -19,13 +19,14 @@ import __init__
 """ Funktioner """
 def main(): 
     """ Temp """
-    color_button_change()
-
-    while True:
+    #color_button_change()
+    check_pallet(3, 1, False)
+    #while True:
         # Left_area('hej')
         #crane_motor.run_angle(100, -500, Stop.HOLD, False)
-        drive_to_correct_colour()
-        pickup_pallet()
+        #drive_to_correct_colour()
+        #pickup_pallet()
+
 
 def rgb_to_color(color):
     """ Temp """
@@ -106,6 +107,35 @@ def pickup_pallet():
                 crane_motor.run_angle(100, -500, Stop.HOLD, False)
                 crane_motor.hold()
     #Ser till så att den håller uppe lasten när den väl har plockat upp 
+
+def check_pallet(tries, direction, second_try):
+
+    if tries > 0:
+        robot.drive(10, 0)
+
+        if color_sensor.reflection <= 10:
+            robot.straight(-10)
+            robot.turn(direction * -90)
+            robot.straight(7)
+            robot.turn(direction * 90)
+
+            check_pallet(tries - 1, direction, second_try)
+        elif touch_sensor.pressed():
+            #kollar om det finns en pall på eller inte och agerar motsvarande
+            #if ultrasonic.distance() < 30:
+                #pick_up_elevated
+            #else:
+            pickup_pallet()
+            #åker tillbaka hur vet jag inte
+    elif tries == 0 and not second_try:
+        robot.turn(-90)
+        #roboten kör fram tillräckligt nära för att kunna starta checkpallet igen
+        check_pallet(1, -1,True)
+    elif tries == 0 and second_try:
+            robot.turn(180)
+            robot.straight(50)
+            robot.turn(90)
+
 
 def liftdown_pallet():
     """ Temp """
