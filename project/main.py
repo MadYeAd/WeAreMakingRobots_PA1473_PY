@@ -17,23 +17,39 @@ import __init__
 """ Funktioner """
 def main(): 
     """ Temp """
+    #color_button_change()
+    #check_pallet(3, 1, False)
+    # while True:
+        # Left_area('hej')
+        #crane_motor.run_angle(100, -500, Stop.HOLD, False)
+        # drive_to_correct_colour()
+        #pickup_pallet()
+
     color_button_change()
 
     while True:
         print(color_sensor.color())
         # Left_area('hej')
         #crane_motor.run_angle(100, -500, Stop.HOLD, False)
-        # drive_to_correct_colour()
+        drive_to_correct_colour()
         # pickup_pallet()
 
-def rgb_to_color(color):
-    """ Temp """
-    for i in my_colors:
-        if color[0] <= i[1][0] and color[0] >= i[2][0]:
-            if color[1] <= i[1][1] and color[1] >= i[2][1]:
-                if color[2] <= i[1][2] and color[2] >= i[2][2]:
-                    return i[0]
-    return(0)
+def rgb_to_color(color, last_color=None):
+    if max(color) == color[0]:
+        result = 'red'
+        if color[1]*1.3 > color[0]:
+            result = 'brown'
+    elif max(color) == color[1]:
+        result = 'green'
+    elif max(color) == color[2]:
+        result = 'blue'
+        if color[0]*1.8 > color[2]:
+            result = 'purple'
+    elif max(color) < 10:
+        result = 'black'
+    else:
+        result = last_color
+    return result
 
 def Left_area(curent_color):
     """ Temp """
@@ -104,6 +120,35 @@ def pickup_pallet():
                 crane_motor.hold()
     #Ser till så att den håller uppe lasten när den väl har plockat upp 
 
+def check_pallet(tries, direction, second_try):
+
+    if tries > 0:
+        robot.drive(10, 0)
+
+        if color_sensor.reflection <= 10:
+            robot.straight(-10)
+            robot.turn(direction * -90)
+            robot.straight(7)
+            robot.turn(direction * 90)
+
+            check_pallet(tries - 1, direction, second_try)
+        elif touch_sensor.pressed():
+            #kollar om det finns en pall på eller inte och agerar motsvarande
+            #if ultrasonic.distance() < 30:
+                #pick_up_elevated
+            #else:
+            pickup_pallet()
+            #åker tillbaka hur vet jag inte
+    elif tries == 0 and not second_try:
+        robot.turn(-90)
+        #roboten kör fram tillräckligt nära för att kunna starta checkpallet igen
+        check_pallet(1, -1,True)
+    elif tries == 0 and second_try:
+            robot.turn(180)
+            robot.straight(50)
+            robot.turn(90)
+
+
 def liftdown_pallet():
     """ Temp """
     if is_holding and touch_sensor.pressed():
@@ -111,20 +156,20 @@ def liftdown_pallet():
         return
     return
 
-def motors_perform(action, speed_modifier):
-    """ Temp """
-    if action == "hold":
-        robot.drive(0,0)
-    elif action == "forward":
-        # motor_right.run(360 * speed_modifier)
-        # motor_left.run(360 * speed_modifier)
-        robot.drive(36 * speed_modifier,0)
-    elif action == "left":
-        motor_right.run(180 * speed_modifier)
-        motor_left.run(-180 * speed_modifier)
-    elif action == "right":
-        motor_right.run(-180 * speed_modifier)
-        motor_left.run(180 * speed_modifier) 
+# def motors_perform(action, speed_modifier):
+#     """ Temp """
+#     if action == "hold":
+#         robot.drive(0,0)
+#     elif action == "forward":
+#         # motor_right.run(360 * speed_modifier)
+#         # motor_left.run(360 * speed_modifier)
+#         robot.drive(36 * speed_modifier,0)
+#     elif action == "left":
+#         motor_right.run(180 * speed_modifier)
+#         motor_left.run(-180 * speed_modifier)
+#     elif action == "right":
+#         motor_right.run(-180 * speed_modifier)
+#         motor_left.run(180 * speed_modifier) 
 
 def collisionavoidence():
     """ Temp """
@@ -212,7 +257,7 @@ def detect_colorline():
 
 def drive_to_correct_colour():
     """ Temp """
-    temp = Color.RED
+    temp = Color.YELLOW
     current_color = color_sensor.color
     if current_color != color_sensor.color:
         if color_sensor.color() == temp:
