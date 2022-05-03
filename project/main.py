@@ -1,15 +1,13 @@
 #!/usr/bin/env pybricks-micropython
-from turtle import color
 from pybricks import robotics
 from pybricks.hubs import EV3Brick
 from pybricks.ev3devices import Motor, ColorSensor, UltrasonicSensor, TouchSensor
-from pybricks.parameters import Port, Stop, Direction, Button, Color
+from pybricks.parameters import Port, Stop, Direction, Button
+from pybricks.parameters import Color
 from pybricks.tools import wait, StopWatch
 from pybricks.robotics import DriveBase
 from pybricks.messaging import BluetoothMailboxServer, TextMailbox
-
 from pybricks import ev3brick as brick
-from pybricks.parameters import Button, Color
 
 import sys
 import threading as th
@@ -22,10 +20,11 @@ def main():
     color_button_change()
 
     while True:
+        print(color_sensor.color())
         # Left_area('hej')
         #crane_motor.run_angle(100, -500, Stop.HOLD, False)
-        drive_to_correct_colour()
-        pickup_pallet()
+        # drive_to_correct_colour()
+        # pickup_pallet()
 
 def rgb_to_color(color):
     """ Temp """
@@ -101,8 +100,6 @@ def pickup_pallet():
             #Om den tappade objektet går den ned igen
         else:
             while crane_motor.angle() >= 0:
-                print('hej')
-                print(crane_motor.angle())
                 crane_motor.run_angle(100, -500, Stop.HOLD, False)
                 crane_motor.hold()
     #Ser till så att den håller uppe lasten när den väl har plockat upp 
@@ -205,12 +202,6 @@ def drive():
     robot.drive(mod_speed , correction)
 
 def detect_colorline():
-    """ Temp """
-    if color_sensor.color() not in POSSIBLE_COLORS:
-        return 0    # added 0 so that it sould stop if it dosen't have the a aceptible colour.
-
-    color_sensor.color() # what is the use of this?
-
     new_linereflection = color_reflection[color_sensor.color()]
 
     return (new_linereflection + light) / 2
@@ -246,11 +237,8 @@ avg_reflection = (light + dark) / 2
 
 color_to_fetch = Color.RED 
 
-POSSIBLE_COLORS = [Color.BLACK, Color.BLUE, Color.GREEN, Color.YELLOW, Color.RED, Color.White, Color.BROWN]
-CENTRAL_COLOR = Color.YELLOW
 #from left to right, (clear), (black), (Blue), (Green), (Yellow), (Red), (White), (Brown)
-color_reflection = [(0, 0),(1, 0), (2, 0), (3, 3), (4, 39), (5, 39), (6, 100), (7, 5)]
-
+color_reflection = [(Color.BLACK, 9), (Color.BLUE, 0), (Color.GREEN, 3), (Color.YELLOW, 59), (Color.RED, 39), (Color.WHITE, 100), (Color.BROWN, 5)]
 
 current_color_reflection = 0
 color_background_reflection = 9
