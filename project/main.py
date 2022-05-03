@@ -1,5 +1,5 @@
 #!/usr/bin/env pybricks-micropython
-# from turtle import color
+from turtle import color
 from pybricks import robotics
 from pybricks.hubs import EV3Brick
 from pybricks.ev3devices import Motor, ColorSensor, UltrasonicSensor, TouchSensor
@@ -182,7 +182,7 @@ def print_text_to_screen(x_position, y_position, text, seconds_on_screen):
     ev3.screen.clear()
 
 def drive():
-    """ Follow a line with one sensor """ # are going to give more ditail
+    """ Folow a line with one sensor """ # are going to give more ditail
     speed_modifier = collisionavoidence()
     correction = (detect_colorline() - color_sensor.reflection()) * 1.65 # Öka för att svänga mer # changed the av to detect_colorline so that it sould run nicely on all colour.
 
@@ -217,13 +217,16 @@ def detect_colorline():
 
 def drive_to_correct_colour():
     """ Temp """
-    drive()
     temp = Color.RED
-    if color_sensor.color() == temp:
-        drive() # ska svänga. vet ej om den kommer att göra det automatisk eller fall man ska hårdkåda den delen.
+    current_color = color_sensor.color
+    if current_color != color_sensor.color:
+        if color_sensor.color() == temp:
+            drive() # ska svänga. vet ej om den kommer att göra det automatisk eller fall man ska hårdkåda den delen.
+        else:
+            robot.drive(speed, 0)
+            wait(100)
+            drive()
     else:
-        robot.drive(speed, 0)
-        wait(1000)
         drive()
 
 
@@ -247,10 +250,11 @@ avg_reflection = (light + dark) / 2
 
 color_to_fetch = Color.RED 
 
-POSSIBLE_COLORS = [Color.BLACK, Color.BLUE, Color.GREEN, Color.YELLOW, Color.RED, Color.BROWN]
+POSSIBLE_COLORS = [Color.BLACK, Color.BLUE, Color.GREEN, Color.YELLOW, Color.RED, Color.White, Color.BROWN]
 CENTRAL_COLOR = Color.YELLOW
-#from left to right, (clear), (black), (Blue), (Green), (Yellow), (Red), (Brown)
-color_reflection = [(0, 0),(1, 0), (2, 0), (3, 3), (4, 39), (5, 39), (7, 5)]
+#from left to right, (clear), (black), (Blue), (Green), (Yellow), (Red), (White), (Brown)
+color_reflection = [(0, 0),(1, 0), (2, 0), (3, 3), (4, 39), (5, 39), (6, 100), (7, 5)]
+
 
 
 current_color_reflection = 0
