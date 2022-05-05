@@ -289,20 +289,12 @@ def detect_colorline():
 
 def drive_to_correct_color(current_color):
     """ Temp """
-<<<<<<< HEAD
-    print("im in drive to correct color")
-    temp = "red"
-    print(current_color)
-    if current_color != rgb_to_color():
-        if rgb_to_color() == temp:
-=======
     print("im in drive to correct colour")
     temp = 'red'
     current_color = color_sensor.rgb()
     current_color = rgb_to_color(current_color)
     if current_color != color_sensor.color:
         if color_sensor.color() == temp:
->>>>>>> 380dc0591903fdc73054352a8b0abdea7af37af9
             print("i need to turn now")
             robot.drive(speed, -90)
             wait(100)
