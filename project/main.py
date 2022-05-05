@@ -308,7 +308,7 @@ def enterspecarea(destination):
     color = color_sensor.rgb()
     result = rgb_to_color(color)
     while result != 'brown':
-        # drive()
+        drive()
         color = color_sensor.rgb()
         result = rgb_to_color(color, result)
     robot.turn(-120)
@@ -316,12 +316,12 @@ def enterspecarea(destination):
         if result != 'brown':
             robot.straight(20)
             print(result)
-        # drive()
+        drive()
         color = color_sensor.rgb()
         result = rgb_to_color(color, result)
     robot.turn(-120)
     while result != 'black':
-        # drive()
+        drive()
         color = color_sensor.rgb()
         result = rgb_to_color(color, result)
     return 'done'
