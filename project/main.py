@@ -16,8 +16,8 @@ import __init__
 
 """ Funktioner """
 def main(): 
-    """ Temp """
     # enterspecarea('red')
+    """ Temp """
     # print(touch_sensor.pressed())
 
     #color_button_change()
@@ -37,7 +37,7 @@ def main():
         # pickup_pallet()
 
 
-def rgb_to_color(color, last_color=None): 
+def rgb_to_color(color): 
     if max(color) < min(color)*1.1:
         result = 'white'
     elif max(color) == color[0]:
@@ -83,7 +83,7 @@ def returnToSpecArea(areaColor):
         robot.drive(50, turnSpeed)
         turnSpeed -= 1
         groundColor = color_sensor.color()
-    return "Tillbaka!" #vi måste ändra till engelska
+    return "Tillbaka!"
 
 def ExitSpecArea(areaColor):
     """ Temp """
@@ -95,7 +95,7 @@ def ExitSpecArea(areaColor):
         robot.drive(50, turnSpeed)
         turnSpeed -= 0.1
         groundColor = color_sensor.color()
-    return "Ute!" # vi måste ändra till engelska.
+    return "Ute!"
 
 def pickup_pallet():
     """ Temp """
@@ -146,45 +146,48 @@ def pick_up_elevated():
 
 def check_pallet(tries, direction, second_try):
     robot.straight(70)
-    robot.turn(direction * -130)
+    robot.turn(direction * -120)
 
-    if ultrasonic_sensor.distance() < 1000:
-       
-        robot.drive(100, 0)
+    if ultrasonic_sensor.distance() < 1500:
+        robot.drive(200, 0)
         if touch_sensor.pressed() and ultrasonic_sensor.distance() < 400:
-            drive(0, 0)
             pick_up_elevated()
-        elif touch_sensor.pressed() and ultrasonic_sensor.distance() > 400:
-            drive(0, 0)
+        elif touch_sensor.pressed and ultrasonic_sensor.distance() > 400:
             pickup_pallet()
-            
     else:
         
-        robot.turn(direction* 130)
+        robot.turn(direction* 120)
         robot.straight(180)
-        robot.turn(direction * -130)
-        if ultrasonic_sensor.distance() < 1000:
+        robot.turn(direction * -120)
+        if ultrasonic_sensor.distance() < 1500:
             robot.drive(200, 0)
             if touch_sensor.pressed() and ultrasonic_sensor.distance() < 400:
                 pick_up_elevated()
-            elif touch_sensor.pressed() and ultrasonic_sensor.distance() > 400:
+            elif touch_sensor.pressed and ultrasonic_sensor.distance() > 400:
                 pickup_pallet()
             
         else:
-            robot.turn(direction* 130)
+            robot.turn(direction* 120)
             robot.straight(-180)
             for x in range(tries):
-                if ultrasonic_sensor.distance() > 1000:
-                    robot.turn(direction * -130)
+                if ultrasonic_sensor.distance() > 1500:
+                    robot.turn(direction * -120)
                     robot.straight(180)
-                    robot.turn(direction * 130)
-                elif ultrasonic_sensor.distance() < 1000:
+                    robot.turn(direction * 120)
+                elif ultrasonic_sensor.distance() < 1500:
                     robot.drive(200, 0)
                     if touch_sensor.pressed() and ultrasonic_sensor.distance() < 400:
                         pick_up_elevated()
-                    elif touch_sensor.pressed() and ultrasonic_sensor.distance() > 400:
+                    elif touch_sensor.pressed and ultrasonic_sensor.distance() > 400:
                         pickup_pallet()
 
+
+def liftdown_pallet():
+    """ Temp """
+    if is_holding and touch_sensor.pressed():
+
+        return
+    return
 
 # def motors_perform(action, speed_modifier):
 #     """ Temp """
@@ -292,11 +295,13 @@ def drive_to_correct_color(current_color):
     if current_color != color_sensor.color:
         if color_sensor.color() == temp:
             print("i need to turn now")
-            robot.turn(-90)
+            robot.drive(speed, -90)
+            wait(100)
             drive() # ska svänga. vet ej om den kommer att göra det automatisk eller fall man ska hårdkåda den delen. # måst hårdkoda.
         else:
             print("going past line")
-            robot.straight(20)
+            robot.drive(speed, 0)
+            wait(100)
             drive()
     else:
         print("i folow line now")
