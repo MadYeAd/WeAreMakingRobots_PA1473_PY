@@ -144,48 +144,45 @@ def pick_up_elevated():
 
 def check_pallet(tries, direction, second_try):
     robot.straight(70)
-    robot.turn(direction * -120)
+    robot.turn(direction * -130)
 
-    if ultrasonic_sensor.distance() < 1500:
-        robot.drive(200, 0)
+    if ultrasonic_sensor.distance() < 1000:
+       
+        robot.drive(100, 0)
         if touch_sensor.pressed() and ultrasonic_sensor.distance() < 400:
+            drive(0, 0)
             pick_up_elevated()
-        elif touch_sensor.pressed and ultrasonic_sensor.distance() > 400:
+        elif touch_sensor.pressed() and ultrasonic_sensor.distance() > 400:
+            drive(0, 0)
             pickup_pallet()
+            
     else:
         
-        robot.turn(direction* 120)
+        robot.turn(direction* 130)
         robot.straight(180)
-        robot.turn(direction * -120)
-        if ultrasonic_sensor.distance() < 1500:
+        robot.turn(direction * -130)
+        if ultrasonic_sensor.distance() < 1000:
             robot.drive(200, 0)
             if touch_sensor.pressed() and ultrasonic_sensor.distance() < 400:
                 pick_up_elevated()
-            elif touch_sensor.pressed and ultrasonic_sensor.distance() > 400:
+            elif touch_sensor.pressed() and ultrasonic_sensor.distance() > 400:
                 pickup_pallet()
             
         else:
-            robot.turn(direction* 120)
+            robot.turn(direction* 130)
             robot.straight(-180)
             for x in range(tries):
-                if ultrasonic_sensor.distance() > 1500:
-                    robot.turn(direction * -120)
+                if ultrasonic_sensor.distance() > 1000:
+                    robot.turn(direction * -130)
                     robot.straight(180)
-                    robot.turn(direction * 120)
-                elif ultrasonic_sensor.distance() < 1500:
+                    robot.turn(direction * 130)
+                elif ultrasonic_sensor.distance() < 1000:
                     robot.drive(200, 0)
                     if touch_sensor.pressed() and ultrasonic_sensor.distance() < 400:
                         pick_up_elevated()
-                    elif touch_sensor.pressed and ultrasonic_sensor.distance() > 400:
+                    elif touch_sensor.pressed() and ultrasonic_sensor.distance() > 400:
                         pickup_pallet()
 
-
-def liftdown_pallet():
-    """ Temp """
-    if is_holding and touch_sensor.pressed():
-
-        return
-    return
 
 # def motors_perform(action, speed_modifier):
 #     """ Temp """
