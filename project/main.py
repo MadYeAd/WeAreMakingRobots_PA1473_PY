@@ -278,7 +278,8 @@ def drive():
     robot.drive(mod_speed , correction)
 
 def detect_colorline():
-    current_color_detected = rgb_to_color()
+    color = color_sensor.rgb()
+    current_color_detected = rgb_to_color(color)
     new_linereflection = color_reflection[current_color_detected]
 
     return (new_linereflection + dark) / 2
@@ -323,7 +324,7 @@ color_to_fetch = Color.RED
 #from left to right, (clear), (black), (Blue), (Green), (Yellow), (Red), (White), (Brown)
 color_reflection = {Color.BLACK: 9, Color.BLUE: 0, Color.GREEN: 3, Color.YELLOW: 59, Color.RED: 39, Color.WHITE: 100, Color.BROWN: 5}
 
-color_reflection_dict = {"black": 9, "blue": 0, "green": 3, "yellow": 59, "red": 39, "white": 100, "brown": 5}
+color_reflection_dict = {"black": 9, "blue": 0, "green": 3, "yellow": 59, "red": 39, "white": 100, "brown": 5, 'purple': 10}
 possible_color = ["black", "blue"] #...
 
 current_color_reflection = 0
