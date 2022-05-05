@@ -287,7 +287,7 @@ def detect_colorline():
 
     return (new_linereflection + dark) / 2
 
-def drive_to_correct_colour():
+def drive_to_correct_color(current_color):
     """ Temp """
     print("im in drive to correct colour")
     temp = 'red'
@@ -296,7 +296,9 @@ def drive_to_correct_colour():
     if current_color != color_sensor.color:
         if color_sensor.color() == temp:
             print("i need to turn now")
-            drive() # ska svänga. vet ej om den kommer att göra det automatisk eller fall man ska hårdkåda den delen.
+            robot.drive(speed, -90)
+            wait(100)
+            drive() # ska svänga. vet ej om den kommer att göra det automatisk eller fall man ska hårdkåda den delen. # måst hårdkoda.
         else:
             print("going past line")
             robot.drive(speed, 0)
@@ -360,6 +362,8 @@ timer_area = 0
 red = ['red', (51,18,16), (36, 10, 9)]
 green = ['green', (7,31,5), (5,23,4)]
 my_colors = [red, green]
+
+current_color = rgb_to_color()
 
 """ if Main """
 if __name__ == '__main__':
