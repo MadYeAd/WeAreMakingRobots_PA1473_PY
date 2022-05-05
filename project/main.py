@@ -296,13 +296,11 @@ def drive_to_correct_color(current_color):
     if current_color != color_sensor.color:
         if color_sensor.color() == temp:
             print("i need to turn now")
-            robot.drive(speed, -90)
-            wait(100)
+            robot.turn(-90)
             drive() # ska svänga. vet ej om den kommer att göra det automatisk eller fall man ska hårdkåda den delen. # måst hårdkoda.
         else:
             print("going past line")
-            robot.drive(speed, 0)
-            wait(100)
+            robot.straight(20)
             drive()
     else:
         print("i folow line now")
