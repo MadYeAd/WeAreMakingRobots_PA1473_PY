@@ -283,7 +283,7 @@ def drive():
 def detect_colorline():
     color = color_sensor.rgb()
     current_color_detected = rgb_to_color(color)
-    new_linereflection = color_reflection[current_color_detected]
+    new_linereflection = color_reflection_dict[current_color_detected]
 
     return (new_linereflection + dark) / 2
 
