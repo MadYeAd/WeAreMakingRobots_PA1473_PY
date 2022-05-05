@@ -53,7 +53,7 @@ def rgb_to_color(color, last_color=None):
     elif max(color) < 10:
         result = 'black'
     else:
-        result = last_color
+        result = 'White'
     return result
 
 def Left_area(curent_color):
