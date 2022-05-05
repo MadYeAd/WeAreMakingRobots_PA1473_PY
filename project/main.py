@@ -38,10 +38,9 @@ def main():
 
 
 def rgb_to_color(color, last_color=None): 
-    
-    #Den här borde fungera
-
-    if max(color) == color[0]:
+    if max(color) < min(color)*1.1:
+        result = 'white'
+    elif max(color) == color[0]:
         result = 'red'
         if color[1]*1.5 > color[0]:
             result = 'brown'
