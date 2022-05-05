@@ -132,7 +132,7 @@ def pick_up_elevated():
     #höjer kran
     crane_motor.run_angle(30, 300, Stop.COAST)
     #kör in och plockar upp när den rör touchsensorn
-    robot.drive(30)
+    robot.drive(100)
     if touch_sensor.pressed:
         robot.drive(0)
         crane_motor.run_angle(30, 320, Stop.COAST)
