@@ -16,9 +16,11 @@ import __init__
 
 """ Funktioner """
 def main(): 
+    # enterspecarea('red')
     """ Temp """
+
     #color_button_change()
-    #check_pallet(3, 1, False)
+    check_pallet(2, 1, False)
     # while True:
         # Left_area('hej')
         #crane_motor.run_angle(100, -500, Stop.HOLD, False)
@@ -26,8 +28,8 @@ def main():
         #pickup_pallet()
 
 
-    while True:
-        color_button_change()
+    # while True:
+    #     color_button_change()
         # Left_area('hej')
         #crane_motor.run_angle(100, -500, Stop.HOLD, False)
         # drive_to_correct_colour()
