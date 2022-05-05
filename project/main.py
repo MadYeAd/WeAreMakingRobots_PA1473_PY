@@ -287,8 +287,9 @@ def detect_colorline():
 def drive_to_correct_colour():
     """ Temp """
     print("im in drive to correct colour")
-    temp = Color.YELLOW
-    current_color = color_sensor.color
+    temp = 'red'
+    current_color = color_sensor.rgb()
+    current_color = rgb_to_color(current_color)
     if current_color != color_sensor.color:
         if color_sensor.color() == temp:
             print("i need to turn now")
@@ -301,6 +302,29 @@ def drive_to_correct_colour():
     else:
         print("i folow line now")
         drive()
+
+def enterspecarea(destination):
+    ev3.speaker.beep()
+    color = color_sensor.rgb()
+    result = rgb_to_color(color)
+    while result != 'brown':
+        # drive()
+        color = color_sensor.rgb()
+        result = rgb_to_color(color, result)
+    robot.turn(-120)
+    while result != destination:
+        if result != 'brown':
+            robot.straight(20)
+            print(result)
+        # drive()
+        color = color_sensor.rgb()
+        result = rgb_to_color(color, result)
+    robot.turn(-120)
+    while result != 'black':
+        # drive()
+        color = color_sensor.rgb()
+        result = rgb_to_color(color, result)
+    return 'done'
 
 
 """ Variabler """
