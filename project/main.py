@@ -16,9 +16,12 @@ import __init__
 
 """ Funktioner """
 def main(): 
+    # enterspecarea('red')
     """ Temp """
+    # print(touch_sensor.pressed())
+
     #color_button_change()
-    #check_pallet(3, 1, False)
+    # check_pallet(2, -1, False)
     # while True:
         # Left_area('hej')
         #crane_motor.run_angle(100, -500, Stop.HOLD, False)
@@ -26,8 +29,8 @@ def main():
         #pickup_pallet()
 
 
-    while True:
-        color_button_change()
+    # while True:
+    #     color_button_change()
         # Left_area('hej')
         #crane_motor.run_angle(100, -500, Stop.HOLD, False)
         # drive_to_correct_colour()
@@ -53,7 +56,7 @@ def rgb_to_color(color, last_color=None):
     elif max(color) < 10:
         result = 'black'
     else:
-        result = last_color
+        result = 'White'
     return result
 
 def Left_area(curent_color):
@@ -277,27 +280,51 @@ def drive():
 def detect_colorline():
     color = color_sensor.rgb()
     current_color_detected = rgb_to_color(color)
-    new_linereflection = color_reflection[current_color_detected]
+    new_linereflection = color_reflection_dict[current_color_detected]
 
     return (new_linereflection + dark) / 2
 
-def drive_to_correct_colour():
+def drive_to_correct_color(current_color):
     """ Temp """
     print("im in drive to correct colour")
-    temp = Color.YELLOW
-    current_color = color_sensor.color
+    temp = 'red'
+    current_color = color_sensor.rgb()
+    current_color = rgb_to_color(current_color)
     if current_color != color_sensor.color:
         if color_sensor.color() == temp:
             print("i need to turn now")
-            drive() # ska svänga. vet ej om den kommer att göra det automatisk eller fall man ska hårdkåda den delen.
+            robot.turn(-90)
+            drive() # ska svänga. vet ej om den kommer att göra det automatisk eller fall man ska hårdkåda den delen. # måst hårdkoda.
         else:
             print("going past line")
-            robot.drive(speed, 0)
-            wait(100)
+            robot.straight(20)
             drive()
     else:
         print("i folow line now")
         drive()
+
+def enterspecarea(destination):
+    ev3.speaker.beep()
+    color = color_sensor.rgb()
+    result = rgb_to_color(color)
+    while result != 'brown':
+        drive()
+        color = color_sensor.rgb()
+        result = rgb_to_color(color, result)
+    robot.turn(-120)
+    while result != destination:
+        if result != 'brown':
+            robot.straight(20)
+            print(result)
+        drive()
+        color = color_sensor.rgb()
+        result = rgb_to_color(color, result)
+    robot.turn(-120)
+    while result != 'black':
+        drive()
+        color = color_sensor.rgb()
+        result = rgb_to_color(color, result)
+    return 'done'
 
 
 """ Variabler """
@@ -319,9 +346,8 @@ dark = 36
 color_to_fetch = Color.RED 
 
 #from left to right, (clear), (black), (Blue), (Green), (Yellow), (Red), (White), (Brown)
-color_reflection = {Color.BLACK: 9, Color.BLUE: 0, Color.GREEN: 3, Color.YELLOW: 59, Color.RED: 39, Color.WHITE: 100, Color.BROWN: 5}
 
-color_reflection_dict = {"black": 9, "blue": 0, "green": 3, "yellow": 59, "red": 39, "white": 100, "brown": 5, 'purple': 10}
+color_reflection_dict = {"black": 9, "blue": 0, "green": 3, "yellow": 59, "red": 39, "white": 100, "brown": 5, "purple": 10}
 possible_color = ["black", "blue"] #...
 
 current_color_reflection = 0
@@ -331,6 +357,8 @@ timer_area = 0
 red = ['red', (51,18,16), (36, 10, 9)]
 green = ['green', (7,31,5), (5,23,4)]
 my_colors = [red, green]
+
+current_color = rgb_to_color()
 
 """ if Main """
 if __name__ == '__main__':
