@@ -16,38 +16,47 @@ import __init__
 
 """ Funktioner """
 def main(): 
+    # enterspecarea('red')
     """ Temp """
+    # print(touch_sensor.pressed())
+
     #color_button_change()
-    #check_pallet(3, 1, False)
+    # check_pallet(2, -1, False)
     # while True:
         # Left_area('hej')
         #crane_motor.run_angle(100, -500, Stop.HOLD, False)
         # drive_to_correct_colour()
         #pickup_pallet()
 
-    color_button_change()
 
-    while True:
+    # while True:
+    #     color_button_change()
         # Left_area('hej')
         #crane_motor.run_angle(100, -500, Stop.HOLD, False)
-        drive_to_correct_color()
+        # drive_to_correct_colour()
         # pickup_pallet()
 
-def rgb_to_color(color, last_color=None):
+
+def rgb_to_color(color, last_color=None): 
+    
+    #Den här borde fungera
+
     if max(color) == color[0]:
         result = 'red'
-        if color[1]*1.3 > color[0]:
+        if color[1]*1.5 > color[0]:
             result = 'brown'
     elif max(color) == color[1]:
         result = 'green'
+        if color[0]*2 > color[1]:
+            result = 'brown'
     elif max(color) == color[2]:
         result = 'blue'
-        if color[0]*1.8 > color[2]:
+        if color[2] < 30:
             result = 'purple'
     elif max(color) < 10:
         result = 'black'
     else:
-        result = last_color
+        result = 'White'
     return result
 
 def Left_area(curent_color):
@@ -119,33 +128,59 @@ def pickup_pallet():
                 crane_motor.hold()
     #Ser till så att den håller uppe lasten när den väl har plockat upp 
 
+def pick_up_elevated():
+    fork_length = 100
+    #backar
+    robot.straight(fork_length * -1)
+    #höjer kran
+    crane_motor.run_angle(30, 300, Stop.COAST)
+    #kör in och plockar upp när den rör touchsensorn
+    robot.drive(100)
+    if touch_sensor.pressed:
+        robot.drive(0)
+        crane_motor.run_angle(30, 320, Stop.COAST)
+    #backar ut och sänker den
+    robot.straight((fork_length + 10)*-1)
+    crane_motor.run_angle(30, 250, Stop.COAST)
+    #return to track
+
+
 def check_pallet(tries, direction, second_try):
+    robot.straight(70)
+    robot.turn(direction * -120)
 
-    if tries > 0:
-        robot.drive(10, 0)
-
-        if color_sensor.reflection <= 10:
-            robot.straight(-10)
-            robot.turn(direction * -90)
-            robot.straight(7)
-            robot.turn(direction * 90)
-
-            check_pallet(tries - 1, direction, second_try)
-        elif touch_sensor.pressed():
-            #kollar om det finns en pall på eller inte och agerar motsvarande
-            #if ultrasonic.distance() < 30:
-                #pick_up_elevated
-            #else:
+    if ultrasonic_sensor.distance() < 1500:
+        robot.drive(200, 0)
+        if touch_sensor.pressed() and ultrasonic_sensor.distance() < 400:
+            pick_up_elevated()
+        elif touch_sensor.pressed and ultrasonic_sensor.distance() > 400:
             pickup_pallet()
-            #åker tillbaka hur vet jag inte
-    elif tries == 0 and not second_try:
-        robot.turn(-90)
-        #roboten kör fram tillräckligt nära för att kunna starta checkpallet igen
-        check_pallet(1, -1,True)
-    elif tries == 0 and second_try:
-            robot.turn(180)
-            robot.straight(50)
-            robot.turn(90)
+    else:
+        
+        robot.turn(direction* 120)
+        robot.straight(180)
+        robot.turn(direction * -120)
+        if ultrasonic_sensor.distance() < 1500:
+            robot.drive(200, 0)
+            if touch_sensor.pressed() and ultrasonic_sensor.distance() < 400:
+                pick_up_elevated()
+            elif touch_sensor.pressed and ultrasonic_sensor.distance() > 400:
+                pickup_pallet()
+            
+        else:
+            robot.turn(direction* 120)
+            robot.straight(-180)
+            for x in range(tries):
+                if ultrasonic_sensor.distance() > 1500:
+                    robot.turn(direction * -120)
+                    robot.straight(180)
+                    robot.turn(direction * 120)
+                elif ultrasonic_sensor.distance() < 1500:
+                    robot.drive(200, 0)
+                    if touch_sensor.pressed() and ultrasonic_sensor.distance() < 400:
+                        pick_up_elevated()
+                    elif touch_sensor.pressed and ultrasonic_sensor.distance() > 400:
+                        pickup_pallet()
 
 
 def liftdown_pallet():
@@ -205,10 +240,10 @@ def color_button_change():
 
     if Button.LEFT in button:
         color_change(Color.RED)
-        thread_text(40, 50, "Fetching Blue Item", 2)
+        thread_text(10, 50, "Fetching Red Item", 2)
     elif Button.RIGHT in button: 
         color_change(Color.BLUE)
-        thread_text(40, 50, "Fetching Blue Item", 2)
+        thread_text(10, 50, "Fetching Blue Item", 2)
 
 def thread_text(x_position = 40, y_position = 50, text = "", seconds_on_screen = 0.5):
     """Threaded operation that print a text to the middle of the screen. It does not interupt any other functions."""
@@ -246,18 +281,28 @@ def drive():
     robot.drive(mod_speed , correction)
 
 def detect_colorline():
-    current_color_detected = color_sensor.color()
+    color = color_sensor.rgb()
+    current_color_detected = rgb_to_color(color)
     new_linereflection = color_reflection[current_color_detected]
 
     return (new_linereflection + dark) / 2
 
 def drive_to_correct_color(current_color):
     """ Temp """
+<<<<<<< HEAD
     print("im in drive to correct color")
     temp = "red"
     print(current_color)
     if current_color != rgb_to_color():
         if rgb_to_color() == temp:
+=======
+    print("im in drive to correct colour")
+    temp = 'red'
+    current_color = color_sensor.rgb()
+    current_color = rgb_to_color(current_color)
+    if current_color != color_sensor.color:
+        if color_sensor.color() == temp:
+>>>>>>> 380dc0591903fdc73054352a8b0abdea7af37af9
             print("i need to turn now")
             robot.drive(speed, -90)
             wait(100)
@@ -270,6 +315,29 @@ def drive_to_correct_color(current_color):
     else:
         print("i folow line now")
         drive()
+
+def enterspecarea(destination):
+    ev3.speaker.beep()
+    color = color_sensor.rgb()
+    result = rgb_to_color(color)
+    while result != 'brown':
+        drive()
+        color = color_sensor.rgb()
+        result = rgb_to_color(color, result)
+    robot.turn(-120)
+    while result != destination:
+        if result != 'brown':
+            robot.straight(20)
+            print(result)
+        drive()
+        color = color_sensor.rgb()
+        result = rgb_to_color(color, result)
+    robot.turn(-120)
+    while result != 'black':
+        drive()
+        color = color_sensor.rgb()
+        result = rgb_to_color(color, result)
+    return 'done'
 
 
 """ Variabler """
@@ -292,7 +360,9 @@ color_to_fetch = Color.RED
 
 #from left to right, (clear), (black), (Blue), (Green), (Yellow), (Red), (White), (Brown)
 color_reflection = {Color.BLACK: 9, Color.BLUE: 0, Color.GREEN: 3, Color.YELLOW: 59, Color.RED: 39, Color.WHITE: 100, Color.BROWN: 5}
-possible_colors = [Color.BLACK, Color.BLUE]
+
+color_reflection_dict = {"black": 9, "blue": 0, "green": 3, "yellow": 59, "red": 39, "white": 100, "brown": 5, "purple": 10}
+possible_color = ["black", "blue"] #...
 
 current_color_reflection = 0
 color_background_reflection = 9
