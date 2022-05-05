@@ -125,33 +125,59 @@ def pickup_pallet():
                 crane_motor.hold()
     #Ser till så att den håller uppe lasten när den väl har plockat upp 
 
+def pick_up_elevated():
+    fork_length = 100
+    #backar
+    robot.straight(fork_length * -1)
+    #höjer kran
+    crane_motor.run_angle(30, 300, Stop.COAST)
+    #kör in och plockar upp när den rör touchsensorn
+    robot.drive(30)
+    if touch_sensor.pressed:
+        robot.drive(0)
+        crane_motor.run_angle(30, 320, Stop.COAST)
+    #backar ut och sänker den
+    robot.straight((fork_length + 10)*-1)
+    crane_motor.run_angle(30, 250, Stop.COAST)
+    #return to track
+
+
 def check_pallet(tries, direction, second_try):
+    robot.straight(70)
+    robot.turn(direction * -120)
 
-    if tries > 0:
-        robot.drive(10, 0)
-
-        if color_sensor.reflection <= 10:
-            robot.straight(-10)
-            robot.turn(direction * -90)
-            robot.straight(7)
-            robot.turn(direction * 90)
-
-            check_pallet(tries - 1, direction, second_try)
-        elif touch_sensor.pressed():
-            #kollar om det finns en pall på eller inte och agerar motsvarande
-            #if ultrasonic.distance() < 30:
-                #pick_up_elevated
-            #else:
+    if ultrasonic_sensor.distance() < 1500:
+        robot.drive(200, 0)
+        if touch_sensor.pressed() and ultrasonic_sensor.distance() < 400:
+            pick_up_elevated()
+        elif touch_sensor.pressed and ultrasonic_sensor.distance() > 400:
             pickup_pallet()
-            #åker tillbaka hur vet jag inte
-    elif tries == 0 and not second_try:
-        robot.turn(-90)
-        #roboten kör fram tillräckligt nära för att kunna starta checkpallet igen
-        check_pallet(1, -1,True)
-    elif tries == 0 and second_try:
-            robot.turn(180)
-            robot.straight(50)
-            robot.turn(90)
+    else:
+        
+        robot.turn(direction* 120)
+        robot.straight(180)
+        robot.turn(direction * -120)
+        if ultrasonic_sensor.distance() < 1500:
+            robot.drive(200, 0)
+            if touch_sensor.pressed() and ultrasonic_sensor.distance() < 400:
+                pick_up_elevated()
+            elif touch_sensor.pressed and ultrasonic_sensor.distance() > 400:
+                pickup_pallet()
+            
+        else:
+            robot.turn(direction* 120)
+            robot.straight(-180)
+            for x in range(tries):
+                if ultrasonic_sensor.distance() > 1500:
+                    robot.turn(direction * -120)
+                    robot.straight(180)
+                    robot.turn(direction * 120)
+                elif ultrasonic_sensor.distance() < 1500:
+                    robot.drive(200, 0)
+                    if touch_sensor.pressed() and ultrasonic_sensor.distance() < 400:
+                        pick_up_elevated()
+                    elif touch_sensor.pressed and ultrasonic_sensor.distance() > 400:
+                        pickup_pallet()
 
 
 def liftdown_pallet():
