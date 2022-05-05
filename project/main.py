@@ -16,8 +16,8 @@ import __init__
 
 """ Funktioner """
 def main(): 
-    # enterspecarea('red')
     """ Temp """
+    # enterspecarea('red')
     # print(touch_sensor.pressed())
 
     #color_button_change()
@@ -84,7 +84,7 @@ def returnToSpecArea(areaColor):
         robot.drive(50, turnSpeed)
         turnSpeed -= 1
         groundColor = color_sensor.color()
-    return "Tillbaka!"
+    return "Tillbaka!" #vi måste ändra till engelska
 
 def ExitSpecArea(areaColor):
     """ Temp """
@@ -96,7 +96,7 @@ def ExitSpecArea(areaColor):
         robot.drive(50, turnSpeed)
         turnSpeed -= 0.1
         groundColor = color_sensor.color()
-    return "Ute!"
+    return "Ute!" # vi måste ändra till engelska.
 
 def pickup_pallet():
     """ Temp """
