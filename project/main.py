@@ -69,6 +69,11 @@ def Left_area(curent_color):
         print_text_to_screen(40, 50, "Robot has left the area", 5)
     #print(timer_area)
 
+def misplaced_item():
+    global is_holding
+    if touch_sensor.pressed() and not is_holding:
+        print_text_to_screen(50,40,'Missplased item', 30)
+
 # def left_area(areaColor):
 #     if ColorSensor == areaColor:
 #         print('Robot has left sprcific area')
@@ -143,6 +148,11 @@ def pick_up_elevated():
     crane_motor.run_angle(30, 250, Stop.COAST)
     #return to track
 
+def secified_colur(colur):  #in dropof and delevery
+    if colur==1:#orange
+        return 'left'
+    else:
+        return 'right'
 
 def check_pallet(tries, direction, second_try):
     robot.straight(70)
@@ -163,7 +173,7 @@ def check_pallet(tries, direction, second_try):
             robot.drive(200, 0)
             if touch_sensor.pressed() and ultrasonic_sensor.distance() < 400:
                 pick_up_elevated()
-            elif touch_sensor.pressed and ultrasonic_sensor.distance() > 400:
+            elif touch_sensor.pressed() and ultrasonic_sensor.distance() > 400:
                 pickup_pallet()
             
         else:
@@ -178,7 +188,7 @@ def check_pallet(tries, direction, second_try):
                     robot.drive(200, 0)
                     if touch_sensor.pressed() and ultrasonic_sensor.distance() < 400:
                         pick_up_elevated()
-                    elif touch_sensor.pressed and ultrasonic_sensor.distance() > 400:
+                    elif touch_sensor.pressed() and ultrasonic_sensor.distance() > 400:
                         pickup_pallet()
 
 
@@ -285,6 +295,15 @@ def detect_colorline():
     new_linereflection = color_reflection_dict[current_color_detected]
 
     return (new_linereflection + dark) / 2
+
+def right_wharhouse(colur):
+    if colur=='red':
+        drive_to_correct_color('red')
+        
+    else:
+        drive_to_correct_color('blue')
+
+### Sugestion: put a while-loop in drive_to_correct_color and use that funcion always in the roundabout and hard code in how it should do it since we know how big the roundabout is?
 
 def drive_to_correct_color(current_color):
     """ Temp """
