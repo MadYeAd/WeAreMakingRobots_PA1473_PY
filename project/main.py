@@ -18,6 +18,13 @@ import __init__
 def main(): 
     # enterspecarea('red')
     """ Temp """
+    destination = 'red'
+    current_color_rgb = color_sensor.rgb()
+    current_color = rgb_to_color(current_color_rgb)
+    if current_color == 'brown':
+        drive_to_correct_color(destination)
+
+
     # print(touch_sensor.pressed())
 
     #color_button_change()
@@ -35,6 +42,8 @@ def main():
         #crane_motor.run_angle(100, -500, Stop.HOLD, False)
         # drive_to_correct_colour()
         # pickup_pallet()
+
+        
 
 
 def rgb_to_color(color): 
@@ -272,6 +281,7 @@ def drive():
     correction = (detect_colorline() - color_sensor.reflection()) * 1.65 # Öka för att svänga mer # changed the av to detect_colorline so that it sould run nicely on all colour.
     if touch_sensor.pressed() and not is_holding:
         print_text_to_screen(40,50,'Missplased item', 30)
+
     if correction >= 6 or correction <=-4: # 6(a) är hur långt in på linjen och -4(b) är när den svänger in mot linjen
         speed_modifier *= 0.2
         if correction <=-4:# #Ska vara överäns med if-satsen (b)
@@ -306,47 +316,43 @@ def right_wharhouse(colur):
 
 ### Sugestion: put a while-loop in drive_to_correct_color and use that funcion always in the roundabout and hard code in how it should do it since we know how big the roundabout is?
 
-def drive_to_correct_color(current_color):
-    """ Temp """
-    print("im in drive to correct colour")
-    temp = 'red'
-    current_color = color_sensor.rgb()
-    current_color = rgb_to_color(current_color)
-    if current_color != color_sensor.color:
-        if color_sensor.color() == temp:
-            print("i need to turn now")
-            robot.drive(speed, -90)
-            wait(100)
-            drive() # ska svänga. vet ej om den kommer att göra det automatisk eller fall man ska hårdkåda den delen. # måst hårdkoda.
-        else:
-            print("going past line")
-            robot.drive(speed, 0)
-            wait(100)
-            drive()
-    else:
-        print("i folow line now")
-        drive()
+# def drive_to_correct_color_temp(current_color):
+#     """ Temp """
+#     print("im in drive to correct colour")
+#     temp = 'red'
+#     current_color = color_sensor.rgb()
+#     current_color = rgb_to_color(current_color)
+#     if current_color != color_sensor.color:
+#         if color_sensor.color() == temp:
+#             print("i need to turn now")
+#             robot.drive(speed, -90)
+#             wait(100)
+#             drive() # ska svänga. vet ej om den kommer att göra det automatisk eller fall man ska hårdkåda den delen. # måst hårdkoda.
+#         else:
+#             print("going past line")
+#             robot.drive(speed, 0)
+#             wait(100)
+#             drive()
+#     else:
+#         print("i folow line now")
+#         drive()
 
-def temp(destination):
-
+def drive_to_correct_color(destination):
     destination = 'red'
     going = True
-
     while going:
         current_color_rgb = color_sensor.rgb()
         current_color = rgb_to_color(current_color_rgb)
         if current_color == destination:
-            print('jag svänger')
+            print('im turning')
             robot.drive(speed, -90)
             wait(100)
             going = False 
         else:
             print("going past line")
             robot.drive(speed, 0)
-            wait(100)
+            wait(30)
             drive()
-
-
 
 def enterspecarea(destination):
     ev3.speaker.beep()
