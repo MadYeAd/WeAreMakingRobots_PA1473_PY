@@ -225,6 +225,7 @@ def liftdown_pallet():
 
 def collisionavoidence():
     """ Temp """
+    print(ultrasonic_sensor.distance)
     if ultrasonic_sensor.distance() < 200 and ultrasonic_sensor.distance() > 150:
         thread_text(40,50,'Decreasing speed1', 1)
         return 0.8
