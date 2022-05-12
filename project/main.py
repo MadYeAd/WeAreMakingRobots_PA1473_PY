@@ -72,7 +72,7 @@ def Left_area(curent_color):
 def misplaced_item():
     global is_holding
     if touch_sensor.pressed() and not is_holding:
-        print_text_to_screen(50,40,'Missplased item', 30)
+        print_text_to_screen(40,50,'Missplased item', 30)
 
 # def left_area(areaColor):
 #     if ColorSensor == areaColor:
@@ -270,7 +270,8 @@ def drive():
     """ Folow a line with one sensor """ # are going to give more ditail
     speed_modifier = collisionavoidence()
     correction = (detect_colorline() - color_sensor.reflection()) * 1.65 # Öka för att svänga mer # changed the av to detect_colorline so that it sould run nicely on all colour.
-
+    if touch_sensor.pressed() and not is_holding:
+        print_text_to_screen(40,50,'Missplased item', 30)
     if correction >= 6 or correction <=-4: # 6(a) är hur långt in på linjen och -4(b) är när den svänger in mot linjen
         speed_modifier *= 0.2
         if correction <=-4:# #Ska vara överäns med if-satsen (b)
