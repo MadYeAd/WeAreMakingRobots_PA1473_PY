@@ -43,29 +43,79 @@ def main():
         # drive_to_correct_colour()
         # pickup_pallet()
 
-        
 
 
-def rgb_to_color(color): 
-    if max(color) < min(color)*1.1:
-        result = 'white'
-    elif max(color) == color[0]:
-        result = 'red'
-        if color[1]*1.5 > color[0]:
-            result = 'brown'
-    elif max(color) == color[1]:
-        result = 'green'
-        if color[0]*2 > color[1]:
-            result = 'brown'
-    elif max(color) == color[2]:
-        result = 'blue'
-        if color[2] < 30:
-            result = 'purple'
-    elif max(color) < 10:
-        result = 'black'
-    else:
-        result = 'White'
-    return result
+#------- Start David -------
+# Koden fungerar i simulatorn men måste antagligen justeras för verkligheten
+
+# Bestämmer färg från inmatad rgb
+def rgb_to_color(rgb):
+    if min(rgb) > 70:
+        return 'white'
+    elif max(rgb) < 30:
+        return 'black'
+    elif max(rgb) == rgb[2] and min(rgb) == rgb[1]:
+        return 'purple'
+    elif max(rgb) == rgb[1] and min(rgb) == rgb[2]:
+        return 'green'
+    elif max(rgb) == rgb[0] and min(rgb) == rgb[2]:
+        return 'brown'
+    elif max(rgb) == rgb[0] and min(rgb) == rgb[1]:
+        return 'red'
+    elif max(rgb) == rgb[2] and min(rgb) == rgb[0]:
+        return 'blue'
+    return 'white'
+
+# Tar sig tillbaka till banan från warehouse
+def exit_warehouse():
+
+    # (Start 1) Åker rakt fram till kanten av warehouset
+    rgb = color_sensor.rgb()
+    color = rgb_to_color(rgb)
+    while color != 'white':
+        robot.drive(30, 0)
+        rgb = color_sensor.rgb()
+        color = rgb_to_color(rgb)
+    # (Slut 1)
+
+    # (Start 2) Åker i bågar längst kanten av warehouset tills den hittar linjen
+    exit = False
+    while not exit:
+
+        # (Start 3) Åker i en båge tills färgen inte längre är vid
+        while color == 'white':
+            robot.drive(30, 40) # !!! Värdena här kan behöva justeras !!!
+            rgb = color_sensor.rgb()
+            color = rgb_to_color(rgb)
+        # (Slut 3)
+
+        # (Start 4) Kör rakt fram 100 gånger. För att se om den är vid banan
+        for i in range(100): # !!! rangen kan behöva justeras !!!
+            rgb = color_sensor.rgb()
+            color = rgb_to_color(rgb)
+            # Blir färgen vit är den vid banan och 'exit' blir True
+            if color == 'white':
+                exit = True
+                print(exit)
+            robot.drive(30,0)
+        # (Slut 4)
+
+        # (Start 5) Är 'exit' False så är den inte vid banan och 
+        # vänder då 180 grader för att vändas mot kanten av warehouset igen
+        if not exit:
+            robot.turn(180) # !!! Graderna kan behöva justeras !!!
+            # Kör till kanten av warehouset efter att ha vänt
+            while color != 'white':
+                robot.drive(30, 0)
+                rgb = color_sensor.rgb()
+                color = rgb_to_color(rgb)
+        # (Slut 5)
+    robot.stop()
+    # (Slut 2)
+
+#------- Slut David -------
+
+
 
 def Left_area(curent_color):
     """ Temp """
@@ -86,30 +136,6 @@ def misplaced_item():
 # def left_area(areaColor):
 #     if ColorSensor == areaColor:
 #         print('Robot has left sprcific area')
-
-def returnToSpecArea(areaColor):
-    """ Temp """
-    groundColor = color_sensor.color()
-    turnSpeed = 90
-    
-    # Kör runt i en cirkel som blir större tills färgsensorn hittar rätt färg
-    while groundColor != areaColor:
-        robot.drive(50, turnSpeed)
-        turnSpeed -= 1
-        groundColor = color_sensor.color()
-    return "Tillbaka!"
-
-def ExitSpecArea(areaColor):
-    """ Temp """
-    groundColor = color_sensor.color()
-    turnSpeed = 90
-
-    # Kör runt i en cirkel som blir större tills färgsensorn hittar en ny färg
-    while groundColor == areaColor:
-        robot.drive(50, turnSpeed)
-        turnSpeed -= 0.1
-        groundColor = color_sensor.color()
-    return "Ute!"
 
 def pickup_pallet():
     """ Temp """
