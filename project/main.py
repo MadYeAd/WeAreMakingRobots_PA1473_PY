@@ -326,6 +326,27 @@ def drive_to_correct_color(current_color):
         print("i folow line now")
         drive()
 
+def temp(destination):
+
+    destination = 'red'
+    going = True
+
+    while going:
+        current_color_rgb = color_sensor.rgb()
+        current_color = rgb_to_color(current_color_rgb)
+        if current_color == destination:
+            print('jag svänger')
+            robot.drive(speed, -90)
+            wait(100)
+            going = False 
+        else:
+            print("going past line")
+            robot.drive(speed, 0)
+            wait(100)
+            drive()
+
+
+
 def enterspecarea(destination):
     ev3.speaker.beep()
     color = color_sensor.rgb()
