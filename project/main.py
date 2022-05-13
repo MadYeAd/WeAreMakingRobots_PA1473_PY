@@ -18,11 +18,13 @@ import __init__
 def main(): 
     # enterspecarea('red')
     """ Temp """
-    destination = 'red'
-    current_color_rgb = color_sensor.rgb()
-    current_color = rgb_to_color(current_color_rgb)
+    destination = 'purple'
+    #current_color_rgb = color_sensor.rgb()
+    current_color = rgb_to_color(color_sensor.rgb())
+   
     if current_color == 'brown':
         drive_to_correct_color(destination)
+    drive()
 
 
     # print(touch_sensor.pressed())
@@ -435,8 +437,6 @@ timer_area = 0
 red = ['red', (51,18,16), (36, 10, 9)]
 green = ['green', (7,31,5), (5,23,4)]
 my_colors = [red, green]
-
-current_color = rgb_to_color()
 
 """ if Main """
 if __name__ == '__main__':
