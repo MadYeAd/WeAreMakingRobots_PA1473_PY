@@ -202,7 +202,7 @@ def pick_up_elevated():
     crane_motor.run_angle(30, 250, Stop.COAST)
     #return to track
 
-def secified_colur(colur):  #in dropof and delevery
+def specified_colur(colur):  #in dropof and delevery
     if colur==1:#orange
         return 'left'
     else:
@@ -394,6 +394,8 @@ def drive_to_correct_color(destination):
             robot.drive(speed, -90)
             wait(100)
             going = False 
+        if current_color == 'brown':
+            drive()
         else:
             print("going past line")
             robot.drive(speed, 0)
@@ -455,7 +457,7 @@ red = ['red', (51,18,16), (36, 10, 9)]
 green = ['green', (7,31,5), (5,23,4)]
 my_colors = [red, green]
 
-current_color = rgb_to_color()
+
 
 """ if Main """
 if __name__ == '__main__':
