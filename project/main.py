@@ -457,6 +457,8 @@ def drive_to_correct_color(destination):
             robot.drive(speed, -90)
             wait(100)
             going = False 
+        if current_color == 'brown':
+            drive()
         else:
             print("going past line")
             robot.drive(speed, 0)
