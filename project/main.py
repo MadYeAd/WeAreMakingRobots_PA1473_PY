@@ -169,6 +169,25 @@ def pickup_pallet():
                 crane_motor.hold()
     #Ser till så att den håller uppe lasten när den väl har plockat upp 
 
+def pickup_procedure(tries, direction, distance):
+    for x in range(tries):
+                if ultrasonic_sensor.distance() > distance:
+                    robot.turn(direction * -120)
+                    robot.straight(180)
+                    robot.turn(direction * 120)
+                elif ultrasonic_sensor.distance() < distance:
+                    drive_to_pickup()
+                
+                if touch_sensor.pressed():
+                    x = tries
+
+def drive_to_pickup():
+    robot.drive(200, 0)
+    if touch_sensor.pressed() and ultrasonic_sensor.distance() < 400:
+        pick_up_elevated()
+    elif touch_sensor.pressed and ultrasonic_sensor.distance() > 400:
+        pickup_pallet()
+
 def pick_up_elevated():
     fork_length = 100
     #backar
