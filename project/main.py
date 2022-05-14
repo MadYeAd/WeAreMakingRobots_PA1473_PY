@@ -16,12 +16,16 @@ import __init__
 
 """ Funktioner """
 def main(): 
+    
+    # while True:
+    #     collisionavoidence()
     # enterspecarea('red')
     """ Temp """
     destination = 'purple'
     #current_color_rgb = color_sensor.rgb()
-    current_color = rgb_to_color(color_sensor.rgb())
-   
+    print(color_sensor.rgb())
+    current_color = Rgb_to_color(color_sensor.rgb())
+    print(current_color)
     if current_color == 'brown':
         drive_to_correct_color(destination)
     drive()
@@ -52,9 +56,9 @@ def main():
 
 # Bestämmer färg från inmatad rgb
 def rgb_to_color(rgb):
-    if min(rgb) > 70:
+    if min(rgb) > 65:
         return 'white'
-    elif max(rgb) < 30:
+    elif max(rgb) < 10:
         return 'black'
     elif max(rgb) == rgb[2] and min(rgb) == rgb[1]:
         return 'purple'
@@ -67,6 +71,24 @@ def rgb_to_color(rgb):
     elif max(rgb) == rgb[2] and min(rgb) == rgb[0]:
         return 'blue'
     return 'white'
+
+def Rgb_to_color(rgb):
+    if rgb[0] <=100 and rgb[0] >=65 and rgb[1] <=100 and rgb[1] >=86 and rgb[2] <=100 and rgb[2] >=95:
+        return 'white'
+    elif rgb[0] <=10 and rgb[0] >=0 and rgb[1] <=10 and rgb[1] >=0 and rgb[2] <=10 and rgb[2] >=0:
+        return 'black'
+    elif rgb[0] <=17 and rgb[0] >=7 and rgb[1] <=16 and rgb[1] >6 and rgb[2] <=47 and rgb[2] >=37:
+        return 'purple'
+    elif rgb[0] <=14 and rgb[0] >=4 and rgb[1] <=54 and rgb[1] >=44 and rgb[2] <=27 and rgb[2] >=17:
+        return 'green'
+    elif rgb[0] <=22 and rgb[0] >=12 and rgb[1] <=25 and rgb[1] >=15 and rgb[2] <=21 and rgb[2] >=11:
+        return 'brown'
+    elif rgb[0] <=75 and rgb[0] >=65 and rgb[1] <=30 and rgb[1] >=20 and rgb[2] <=44 and rgb[2] >=34:
+        return 'red'
+    elif rgb[0] <=15 and rgb[0] >=5 and rgb[1] <=32 and rgb[1] >=22 and rgb[2] <=56 and rgb[2] >=42:
+        return 'blue'
+    else:
+        return 'white'
 
 # Tar sig tillbaka till banan från warehouse
 def exit_warehouse():
@@ -272,25 +294,27 @@ def liftdown_pallet():
 
 def collisionavoidence():
     """ Temp """
-    print(ultrasonic_sensor.distance)
-    if ultrasonic_sensor.distance() < 200 and ultrasonic_sensor.distance() > 150:
-        thread_text(40,50,'Decreasing speed1', 1)
+    
+    
+    
+    if ultrasonic_sensor.distance() < 400 and ultrasonic_sensor.distance() > 350:
+        thread_text(30,50,'D-speed1', 1)
         return 0.8
         
-    elif ultrasonic_sensor.distance() < 150 and ultrasonic_sensor.distance() > 120:
-        thread_text(40,50,'Decreasing speed2', 1)
+    elif ultrasonic_sensor.distance() < 350 and ultrasonic_sensor.distance() > 300:
+        thread_text(30,50,'D-speed2', 1)
         return 0.6 
 
-    elif ultrasonic_sensor.distance() < 120 and ultrasonic_sensor.distance() > 100:
-        thread_text(40,50,'Decreasing speed3', 1)
+    elif ultrasonic_sensor.distance() < 300 and ultrasonic_sensor.distance() > 250:
+        thread_text(30,50,'D-speed3', 1)
         return 0.4
 
-    elif ultrasonic_sensor.distance() < 100 and ultrasonic_sensor.distance() > 70:
-        thread_text(40,50,'Decreasing speed4', 1)
+    elif ultrasonic_sensor.distance() < 250 and ultrasonic_sensor.distance() > 230:
+        thread_text(30,50,'D-speed4', 1)
         return 0.2
 
-    elif ultrasonic_sensor.distance() < 70:
-        thread_text(40,50,'Full stop!', 1)
+    elif ultrasonic_sensor.distance() < 230:
+        thread_text(30,50,'Full stop!', 1)
         return 0.0
 
     else:
@@ -325,8 +349,13 @@ def print_text_to_screen(x_position, y_position, text, seconds_on_screen):
 
 def drive():
     """ Folow a line with one sensor """ # are going to give more ditail
+    global collerline
+    global speed
     speed_modifier = collisionavoidence()
-    correction = (detect_colorline() - color_sensor.reflection()) * 1.65 # Öka för att svänga mer # changed the av to detect_colorline so that it sould run nicely on all colour.
+    if not Rgb_to_color(color_sensor.rgb()) == 'white':
+        collerline= detect_colorline()
+    
+    correction = (collerline - color_sensor.reflection()) * 1.65 # Öka för att svänga mer # changed the av to detect_colorline so that it sould run nicely on all colour.
     if touch_sensor.pressed() and not is_holding:
         print_text_to_screen(40,50,'Missplased item', 30)
 
@@ -344,13 +373,13 @@ def drive():
         mod_speed = speed * (speed_modifier*(-1))
     else:
         mod_speed = speed * (speed_modifier)
-    mod_speed = speed * -speed_modifier
+    mod_speed = speed * speed_modifier #temp to positive
 
     robot.drive(mod_speed , correction)
 
 def detect_colorline():
     color = color_sensor.rgb()
-    current_color_detected = rgb_to_color(color)
+    current_color_detected = Rgb_to_color(color)
     new_linereflection = color_reflection_dict[current_color_detected]
 
     return (new_linereflection + dark) / 2
@@ -386,21 +415,31 @@ def right_wharhouse(colur):
 #         drive()
 
 def drive_to_correct_color(destination):
-    destination = 'red'
     going = True
     while going:
         current_color_rgb = color_sensor.rgb()
-        current_color = rgb_to_color(current_color_rgb)
+        current_color = Rgb_to_color(current_color_rgb)
         if current_color == destination:
             print('im turning')
-            robot.drive(speed, -90)
-            wait(100)
+            robot.drive(-50,0)
+            wait(900)
+            robot.drive(50, -90)
+            wait(1700)
             going = False 
-        else:
-            print("going past line")
-            robot.drive(speed, 0)
-            wait(30)
+            while current_color != destination:
+                robot.drive(50, -90)
+
+        if current_color == 'brown':
+            print('follow line')
             drive()
+        else:
+            if current_color == 'white':
+                robot.drive(50,20)
+            else:
+                print("going past line")
+                robot.drive(100, 0)
+                wait(100)
+                drive()
 
 def enterspecarea(destination):
     ev3.speaker.beep()
@@ -457,6 +496,7 @@ red = ['red', (51,18,16), (36, 10, 9)]
 green = ['green', (7,31,5), (5,23,4)]
 my_colors = [red, green]
 
+collerline=55
 """ if Main """
 if __name__ == '__main__':
     sys.exit(main())
