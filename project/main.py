@@ -17,32 +17,8 @@ import __init__
 """ Funktioner """
 def main(): 
     # enterspecarea('red')
-    """ Temp """
-    destination = 'red'
-    current_color_rgb = color_sensor.rgb()
-    current_color = rgb_to_color(current_color_rgb)
-    if current_color == 'brown':
-        drive_to_correct_color(destination)
-
-
-    # print(touch_sensor.pressed())
-
-    #color_button_change()
-    # check_pallet(2, -1, False)
-    # while True:
-        # Left_area('hej')
-        #crane_motor.run_angle(100, -500, Stop.HOLD, False)
-        # drive_to_correct_colour()
-        #pickup_pallet()
-
-
-    # while True:
-    #     color_button_change()
-        # Left_area('hej')
-        #crane_motor.run_angle(100, -500, Stop.HOLD, False)
-        # drive_to_correct_colour()
-        # pickup_pallet()
-
+    print(color_sensor.rgb())
+    print(rgb_to_color(color_sensor.rgb()))
 
 
 #------- Start David -------
@@ -113,10 +89,6 @@ def exit_warehouse():
     robot.stop()
     # (Slut 2)
 
-#------- Slut David -------
-
-
-
 def Left_area(curent_color):
     """ Temp """
     global timer_area
@@ -131,7 +103,7 @@ def Left_area(curent_color):
 def misplaced_item():
     global is_holding
     if touch_sensor.pressed() and not is_holding:
-        print_text_to_screen(40,50,'Missplased item', 30)
+        print_text_to_screen(40,50,'Misplaced item', 30)
 
 # def left_area(areaColor):
 #     if ColorSensor == areaColor:
@@ -202,7 +174,7 @@ def pick_up_elevated():
     crane_motor.run_angle(30, 250, Stop.COAST)
     #return to track
 
-def secified_colur(colur):  #in dropof and delevery
+def specified_color(colur):  #in dropof and delevery
     if colur==1:#orange
         return 'left'
     else:
@@ -245,29 +217,6 @@ def check_pallet(tries, direction, second_try):
                     elif touch_sensor.pressed() and ultrasonic_sensor.distance() > 400:
                         pickup_pallet()
 
-
-def liftdown_pallet():
-    """ Temp """
-    if is_holding and touch_sensor.pressed():
-
-        return
-    return
-
-# def motors_perform(action, speed_modifier):
-#     """ Temp """
-#     if action == "hold":
-#         robot.drive(0,0)
-#     elif action == "forward":
-#         # motor_right.run(360 * speed_modifier)
-#         # motor_left.run(360 * speed_modifier)
-#         robot.drive(36 * speed_modifier,0)
-#     elif action == "left":
-#         motor_right.run(180 * speed_modifier)
-#         motor_left.run(-180 * speed_modifier)
-#     elif action == "right":
-#         motor_right.run(-180 * speed_modifier)
-#         motor_left.run(180 * speed_modifier) 
-
 def collisionavoidence():
     """ Temp """
     print(ultrasonic_sensor.distance)
@@ -294,19 +243,16 @@ def collisionavoidence():
     else:
         return 1
 
-def color_change(color):
-    """ Temp """
-    color_to_fetch = color
-
 def color_button_change():
     """ Color fetcher/changer with the help of the buttons. """
     button = brick.buttons()
 
     if Button.LEFT in button:
-        color_change(Color.RED)
+        #change color to red
+        drive_to_correct_color("red")
         thread_text(10, 50, "Fetching Red Item", 2)
     elif Button.RIGHT in button: 
-        color_change(Color.BLUE)
+        drive_to_correct_color("blue")
         thread_text(10, 50, "Fetching Blue Item", 2)
 
 def thread_text(x_position = 40, y_position = 50, text = "", seconds_on_screen = 0.5):
@@ -320,6 +266,7 @@ def print_text_to_screen(x_position, y_position, text, seconds_on_screen):
     ev3.screen.draw_text(x_position, y_position, text)
     time.sleep(seconds_on_screen)
     ev3.screen.clear()
+    
 
 def drive():
     """ Folow a line with one sensor """ # are going to give more ditail
@@ -360,7 +307,8 @@ def right_wharhouse(colur):
     else:
         drive_to_correct_color('blue')
 
-### Sugestion: put a while-loop in drive_to_correct_color and use that funcion always in the roundabout and hard code in how it should do it since we know how big the roundabout is?
+# Sugestion: put a while-loop in drive_to_correct_color and use that funcion always in the roundabout 
+# and hard code in how it should do it since we know how big the roundabout is?
 
 # def drive_to_correct_color_temp(current_color):
 #     """ Temp """
@@ -454,8 +402,6 @@ timer_area = 0
 red = ['red', (51,18,16), (36, 10, 9)]
 green = ['green', (7,31,5), (5,23,4)]
 my_colors = [red, green]
-
-current_color = rgb_to_color()
 
 """ if Main """
 if __name__ == '__main__':
