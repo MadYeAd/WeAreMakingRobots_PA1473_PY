@@ -224,7 +224,6 @@ def drive_to_pickup():
     elif touch_sensor.pressed() and ultrasonic_sensor.distance() > 400:
         pickup_pallet()
 
-
 def pick_up_elevated():
     fork_length = 100
     #backar
@@ -286,7 +285,7 @@ def check_pallet(tries, direction):
             pickup_procedure(tries, direction, 2000)
             #åker tillbaka, hur vet jag inte
 
-def secified_colur(colur):  #in dropof and delevery
+def specified_colur(colur):  #in dropof and delevery
     if colur==1:#orange
         return 'left'
     else:
@@ -329,14 +328,6 @@ def check_pallet(tries, direction, second_try):
                     elif touch_sensor.pressed() and ultrasonic_sensor.distance() > 400:
                         pickup_pallet()
 
-
-def liftdown_pallet():
-    """ Temp """
-    if is_holding and touch_sensor.pressed():
-
-        return
-    return
-
 # def motors_perform(action, speed_modifier):
 #     """ Temp """
 #     if action == "hold":
@@ -354,8 +345,6 @@ def liftdown_pallet():
 
 def collisionavoidence():
     """ Temp """
-    
-    
     
     if ultrasonic_sensor.distance() < 400 and ultrasonic_sensor.distance() > 350:
         thread_text(30,50,'D-speed1', 1)
@@ -406,6 +395,16 @@ def print_text_to_screen(x_position, y_position, text, seconds_on_screen):
     ev3.screen.draw_text(x_position, y_position, text)
     time.sleep(seconds_on_screen)
     ev3.screen.clear()
+
+def thread_hold (speed, target_angle):
+    """Threaded operation for holding the fork in place"""
+
+    th.Thread(target=hold_fork, args=(speed, target_angle)).start()
+
+def hold_fork(speed, target_angle):
+    """Needs testing"""
+
+    crane_motor.run_target(speed, target_angle, then=Stop.HOLD, wait=False)
 
 def drive():
     """ Folow a line with one sensor """ # are going to give more ditail
@@ -486,20 +485,7 @@ def drive_to_correct_color(destination):
             robot.drive(50, -90)
             wait(1700)
             going = False 
-<<<<<<< HEAD
-            while current_color != destination:
-                robot.drive(50, -90)
-
         if current_color == 'brown':
-            print('follow line')
-=======
-        if current_color == 'brown':
-            drive()
-        else:
-            print("going past line")
-            robot.drive(speed, 0)
-            wait(30)
->>>>>>> c2a78fd093dada31e58f61733cf90df485b10f59
             drive()
         else:
             if current_color == 'white':
@@ -565,12 +551,6 @@ red = ['red', (51,18,16), (36, 10, 9)]
 green = ['green', (7,31,5), (5,23,4)]
 my_colors = [red, green]
 
-<<<<<<< HEAD
-collerline=55
-=======
-#current_color = rgb_to_color()
-
->>>>>>> c2a78fd093dada31e58f61733cf90df485b10f59
 """ if Main """
 if __name__ == '__main__':
     sys.exit(main())
