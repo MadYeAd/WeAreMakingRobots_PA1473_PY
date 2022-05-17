@@ -55,22 +55,6 @@ def main():
 # Koden fungerar i simulatorn men måste antagligen justeras för verkligheten
 
 # Bestämmer färg från inmatad rgb
-def rgb_to_color(rgb):
-    if min(rgb) > 65:
-        return 'white'
-    elif max(rgb) < 10:
-        return 'black'
-    elif max(rgb) == rgb[2] and min(rgb) == rgb[1]:
-        return 'purple'
-    elif max(rgb) == rgb[1] and min(rgb) == rgb[2]:
-        return 'green'
-    elif max(rgb) == rgb[0] and min(rgb) == rgb[2]:
-        return 'brown'
-    elif max(rgb) == rgb[0] and min(rgb) == rgb[1]:
-        return 'red'
-    elif max(rgb) == rgb[2] and min(rgb) == rgb[0]:
-        return 'blue'
-    return 'white'
 
 def Rgb_to_color(rgb):
     if rgb[0] <=100 and rgb[0] >=65 and rgb[1] <=100 and rgb[1] >=86 and rgb[2] <=100 and rgb[2] >=95:
