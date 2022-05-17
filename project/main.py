@@ -16,6 +16,8 @@ import __init__
 
 """ Funktioner """
 def main(): 
+
+    exit_warehouse()
     
     # while True:
     #     collisionavoidence()
@@ -47,7 +49,6 @@ def main():
 
     ##pickup_procedure(3, -1, 2000)
 
-    drive_to_pickup()
 
 
 
@@ -85,6 +86,8 @@ def exit_warehouse():
         rgb = color_sensor.rgb()
         color = Rgb_to_color(rgb)
     # (Slut 1)
+    ev3.speaker.beep()
+    thread_text(text=color)
 
     # (Start 2) Åker i bågar längst kanten av warehouset tills den hittar linjen
     exit = False
