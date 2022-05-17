@@ -79,11 +79,11 @@ def exit_warehouse():
 
     # (Start 1) Åker rakt fram till kanten av warehouset
     rgb = color_sensor.rgb()
-    color = rgb_to_color(rgb)
+    color = Rgb_to_color(rgb)
     while color != 'white':
         robot.drive(30, 0)
         rgb = color_sensor.rgb()
-        color = rgb_to_color(rgb)
+        color = Rgb_to_color(rgb)
     # (Slut 1)
 
     # (Start 2) Åker i bågar längst kanten av warehouset tills den hittar linjen
