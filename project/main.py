@@ -20,8 +20,8 @@ def main():
     # while True:
     #     collisionavoidence()
     # enterspecarea('red')
-    """ Temp """
-    destination = 'purple'
+    
+    #destination = 'red'
     #current_color_rgb = color_sensor.rgb()
     print(color_sensor.rgb())
     current_color = Rgb_to_color(color_sensor.rgb())
@@ -55,22 +55,6 @@ def main():
 # Koden fungerar i simulatorn men måste antagligen justeras för verkligheten
 
 # Bestämmer färg från inmatad rgb
-def rgb_to_color(rgb):
-    if min(rgb) > 65:
-        return 'white'
-    elif max(rgb) < 10:
-        return 'black'
-    elif max(rgb) == rgb[2] and min(rgb) == rgb[1]:
-        return 'purple'
-    elif max(rgb) == rgb[1] and min(rgb) == rgb[2]:
-        return 'green'
-    elif max(rgb) == rgb[0] and min(rgb) == rgb[2]:
-        return 'brown'
-    elif max(rgb) == rgb[0] and min(rgb) == rgb[1]:
-        return 'red'
-    elif max(rgb) == rgb[2] and min(rgb) == rgb[0]:
-        return 'blue'
-    return 'white'
 
 def Rgb_to_color(rgb):
     if rgb[0] <=100 and rgb[0] >=65 and rgb[1] <=100 and rgb[1] >=86 and rgb[2] <=100 and rgb[2] >=95:
@@ -95,11 +79,11 @@ def exit_warehouse():
 
     # (Start 1) Åker rakt fram till kanten av warehouset
     rgb = color_sensor.rgb()
-    color = rgb_to_color(rgb)
+    color = Rgb_to_color(rgb)
     while color != 'white':
         robot.drive(30, 0)
         rgb = color_sensor.rgb()
-        color = rgb_to_color(rgb)
+        color = Rgb_to_color(rgb)
     # (Slut 1)
 
     # (Start 2) Åker i bågar längst kanten av warehouset tills den hittar linjen
@@ -137,10 +121,6 @@ def exit_warehouse():
     robot.stop()
     # (Slut 2)
 
-#------- Slut David -------
-
-
-
 def Left_area(curent_color):
     """ Temp """
     global timer_area
@@ -155,7 +135,7 @@ def Left_area(curent_color):
 def misplaced_item():
     global is_holding
     if touch_sensor.pressed() and not is_holding:
-        print_text_to_screen(40,50,'Missplased item', 30)
+        print_text_to_screen(40,50,'Misplaced item', 30)
 
 # def left_area(areaColor):
 #     if ColorSensor == areaColor:
@@ -226,7 +206,7 @@ def pick_up_elevated():
     crane_motor.run_angle(30, 250, Stop.COAST)
     #return to track
 
-def secified_colur(colur):  #in dropof and delevery
+def specified_color(colur):  #in dropof and delevery
     if colur==1:#orange
         return 'left'
     else:
@@ -269,33 +249,10 @@ def check_pallet(tries, direction, second_try):
                     elif touch_sensor.pressed() and ultrasonic_sensor.distance() > 400:
                         pickup_pallet()
 
-
-def liftdown_pallet():
-    """ Temp """
-    if is_holding and touch_sensor.pressed():
-
-        return
-    return
-
-# def motors_perform(action, speed_modifier):
-#     """ Temp """
-#     if action == "hold":
-#         robot.drive(0,0)
-#     elif action == "forward":
-#         # motor_right.run(360 * speed_modifier)
-#         # motor_left.run(360 * speed_modifier)
-#         robot.drive(36 * speed_modifier,0)
-#     elif action == "left":
-#         motor_right.run(180 * speed_modifier)
-#         motor_left.run(-180 * speed_modifier)
-#     elif action == "right":
-#         motor_right.run(-180 * speed_modifier)
-#         motor_left.run(180 * speed_modifier) 
-
 def collisionavoidence():
-    """ Slow down depending how close the opstical is. """
+    """ depending on the distanse it will slow down """
     
-    if ultrasonic_sensor.distance() < 450 and ultrasonic_sensor.distance() > 400:
+    if ultrasonic_sensor.distance() < 400 and ultrasonic_sensor.distance() > 350:
         thread_text(30,50,'D-speed1', 1)
         return 0.8
         
@@ -318,19 +275,16 @@ def collisionavoidence():
     else:
         return 1
 
-def color_change(color):
-    """ Temp """
-    color_to_fetch = color
-
 def color_button_change():
     """ Color fetcher/changer with the help of the buttons. """
     button = brick.buttons()
 
     if Button.LEFT in button:
-        color_change(Color.RED)
+        #change color to red
+        drive_to_correct_color("red")
         thread_text(10, 50, "Fetching Red Item", 2)
     elif Button.RIGHT in button: 
-        color_change(Color.BLUE)
+        drive_to_correct_color("blue")
         thread_text(10, 50, "Fetching Blue Item", 2)
 
 def thread_text(x_position = 40, y_position = 50, text = "", seconds_on_screen = 0.5):
@@ -344,6 +298,17 @@ def print_text_to_screen(x_position, y_position, text, seconds_on_screen):
     ev3.screen.draw_text(x_position, y_position, text)
     time.sleep(seconds_on_screen)
     ev3.screen.clear()
+    
+
+def thread_hold (speed, target_angle):
+    """Threaded operation for holding the fork in place"""
+
+    th.Thread(target=hold_fork, args=(speed, target_angle)).start()
+
+def hold_fork(speed, target_angle):
+    """Needs testing"""
+
+    crane_motor.run_target(speed, target_angle, then=Stop.HOLD, wait=False)
 
 def drive():
     """ Folow a line with one sensor """ # are going to give more ditail
@@ -389,7 +354,8 @@ def right_wharhouse(colur):
     else:
         drive_to_correct_color('blue')
 
-### Sugestion: put a while-loop in drive_to_correct_color and use that funcion always in the roundabout and hard code in how it should do it since we know how big the roundabout is?
+# Sugestion: put a while-loop in drive_to_correct_color and use that funcion always in the roundabout 
+# and hard code in how it should do it since we know how big the roundabout is?
 
 # def drive_to_correct_color_temp(current_color):
 #     """ Temp """
@@ -424,11 +390,7 @@ def drive_to_correct_color(destination):
             robot.drive(50, -90)
             wait(1700)
             going = False 
-            while current_color != destination:
-                robot.drive(50, -90)
-
         if current_color == 'brown':
-            print('follow line')
             drive()
         else:
             if current_color == 'white':
@@ -494,7 +456,9 @@ red = ['red', (51,18,16), (36, 10, 9)]
 green = ['green', (7,31,5), (5,23,4)]
 my_colors = [red, green]
 
+
 collerline=55
+
 """ if Main """
 if __name__ == '__main__':
     sys.exit(main())
