@@ -83,7 +83,14 @@ def Rgb_to_color(rgb):
         return 'white'
 
 
-def exit_warehouse():
+def exit_warehouse(dest):
+
+    if dest == 'red':
+        side = -1
+    else: 
+        side = 1
+
+    robot.turn(90*side)
 
     rgb = color_sensor.rgb()
     color = Rgb_to_color(rgb)
@@ -101,14 +108,13 @@ def exit_warehouse():
         color = Rgb_to_color(rgb)
         print(rgb,color)
         if color == 'white':
-            robot.drive(30,20)
-        elif color == 'red':
+            robot.drive(30,20*side)
+        elif color == dest:
             exit = True
         else:
-            robot.drive(30,-40)
+            robot.drive(30,-40*side)
 
     robot.stop()
-    # (Slut 2)
 
 
 def Left_area(curent_color):
@@ -444,10 +450,6 @@ possible_color = ["black", "blue"] #...
 current_color_reflection = 0
 color_background_reflection = 9
 timer_area = 0
-
-red = ['red', (51,18,16), (36, 10, 9)]
-green = ['green', (7,31,5), (5,23,4)]
-my_colors = [red, green]
 
 
 collerline=55
