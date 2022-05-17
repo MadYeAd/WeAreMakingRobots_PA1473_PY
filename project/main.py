@@ -15,40 +15,10 @@ import time
 import __init__
 
 """ Funktioner """
-def main(): 
-    
-    # while True:
-    #     collisionavoidence()
-    # enterspecarea('red')
-    
-    #destination = 'red'
-    #current_color_rgb = color_sensor.rgb()
-    #current_color = rgb_to_color(current_color_rgb)
-    #if current_color == 'brown':
-        #drive_to_correct_color(destination)
-
-    # print(touch_sensor.pressed())
-    
-    #color_button_change()
-    # check_pallet(2, -1, False)
-    # while True:
-        # Left_area('hej')
-        #crane_motor.run_angle(100, -500, Stop.HOLD, False)
-        # drive_to_correct_colour()
-        #pickup_pallet()
-
-
-    # while True:
-    #     color_button_change()
-        # Left_area('hej')
-        #crane_motor.run_angle(100, -500, Stop.HOLD, False)
-        # drive_to_correct_colour()
-        # pickup_pallet()
-
-    ##pickup_procedure(3, -1, 2000)
-
-    drive_to_pickup()
-
+def main():
+    # print(detect_colorline())
+    while True: 
+        print(color_sensor.reflection())
 
 
 #------- Start David -------
@@ -147,11 +117,6 @@ def Left_area(curent_color):
     if timer_area >= 200:
         print_text_to_screen(40, 50, "Robot has left the area", 5)
     #print(timer_area)
-
-def misplaced_item():
-    global is_holding
-    if touch_sensor.pressed() and not is_holding:
-        print_text_to_screen(40,50,'Misplaced item', 30)
 
 # def left_area(areaColor):
 #     if ColorSensor == areaColor:
@@ -313,7 +278,6 @@ def collisionavoidence():
     elif ultrasonic_sensor.distance() < 230:
         thread_text(30,50,'Full stop!', 1)
         return 0.0
-
     else:
         return 1
 
@@ -340,27 +304,46 @@ def print_text_to_screen(x_position, y_position, text, seconds_on_screen):
     ev3.screen.draw_text(x_position, y_position, text)
     time.sleep(seconds_on_screen)
     ev3.screen.clear()
-    
 
-def thread_hold (speed, target_angle):
-    """Threaded operation for holding the fork in place"""
+def hold_fork():
+    crane_motor.run_target(20, 40, then=Stop.HOLD, wait=False)
 
-    th.Thread(target=hold_fork, args=(speed, target_angle)).start()
+def misplaced_item():
+    global is_holding
+    if touch_sensor.pressed() and not is_holding:
+        print_text_to_screen(40,50,'Misplaced item', 30)
+        emergency_mode()
 
-def hold_fork(speed, target_angle):
-    """Needs testing"""
+    if ultrasonic_sensor.distance() > 100:
+        return 
 
-    crane_motor.run_target(speed, target_angle, then=Stop.HOLD, wait=False)
+def abort_collection():
+
+    return
+
+def emergency_mode():
+    #return to warehouse 
+    robot.straight(-150)
+    robot.turn(90)
+
+    drive()
+    current_color = Rgb_to_color(color_sensor.color)
+
+    if current_color == "brown":
+        drive_to_correct_color("green")
 
 def drive():
-    """ Folow a line with one sensor """ # are going to give more ditail
-    global collerline
+    """ Folow a line with one sensor """ # are going to give more detail
+    global colorline
     global speed
+    
+    crane_motor.run_target(20, 40, then=Stop.HOLD, wait=False)
+
     speed_modifier = collisionavoidence()
     if not Rgb_to_color(color_sensor.rgb()) == 'white':
-        collerline= detect_colorline()
+        colorline = detect_colorline()
     
-    correction = (collerline - color_sensor.reflection()) * 1.65 # Öka för att svänga mer # changed the av to detect_colorline so that it sould run nicely on all colour.
+    correction = (colorline - color_sensor.reflection()) * 1.65 # Öka för att svänga mer # changed the av to detect_colorline so that it sould run nicely on all colour.
     if touch_sensor.pressed() and not is_holding:
         print_text_to_screen(40,50,'Missplased item', 30)
 
@@ -384,10 +367,16 @@ def drive():
 
 def detect_colorline():
     color = color_sensor.rgb()
-    current_color_detected = Rgb_to_color(color)
-    new_linereflection = color_reflection_dict[current_color_detected]
+    new_linereflection = color_reflection_dict[Rgb_to_color(color)]
 
-    return (new_linereflection + dark) / 2
+    return (new_linereflection + background_color) / 2
+
+def get_colorlineAVG(color):
+    if color in color_background_reflection.keys():
+        return (color_reflection_dict[color] + background_color) / 2
+    else: 
+        print()
+        return 
 
 def right_wharhouse(colur):
     if colur=='red':
@@ -396,52 +385,33 @@ def right_wharhouse(colur):
     else:
         drive_to_correct_color('blue')
 
-# Sugestion: put a while-loop in drive_to_correct_color and use that funcion always in the roundabout 
-# and hard code in how it should do it since we know how big the roundabout is?
-
-# def drive_to_correct_color_temp(current_color):
-#     """ Temp """
-#     print("im in drive to correct colour")
-#     temp = 'red'
-#     current_color = color_sensor.rgb()
-#     current_color = rgb_to_color(current_color)
-#     if current_color != color_sensor.color:
-#         if color_sensor.color() == temp:
-#             print("i need to turn now")
-#             robot.drive(speed, -90)
-#             wait(100)
-#             drive() # ska svänga. vet ej om den kommer att göra det automatisk eller fall man ska hårdkåda den delen. # måst hårdkoda.
-#         else:
-#             print("going past line")
-#             robot.drive(speed, 0)
-#             wait(100)
-#             drive()
-#     else:
-#         print("i folow line now")
-#         drive()
-
 def drive_to_correct_color(destination):
-    going = True
-    while going:
-        current_color_rgb = color_sensor.rgb()
-        current_color = Rgb_to_color(current_color_rgb)
-        if current_color == destination:
-            print('im turning')
-            robot.drive(-50,0)
-            wait(900)
-            robot.drive(50, -90)
-            wait(1700)
-            going = False 
-        if current_color == 'brown':
-            drive()
-        else:
-            if current_color == 'white':
-                robot.drive(50,20)
-            else:
-                print("going past line")
-                robot.drive(100, 0)
-                wait(100)
+    drive()
+
+    current_color = Rgb_to_color(color_sensor)
+
+    if current_color == "brown":
+        going = True
+        while going: 
+            current_color_rgb = color_sensor.rgb()
+            current_color = Rgb_to_color(current_color_rgb)
+            if current_color == destination:
+                print('im turning')
+                robot.drive(-50,0)
+                wait(900)
+                robot.drive(50, -90)
+                wait(1700)
+                going = False 
+            if current_color == 'brown':
                 drive()
+            else:
+                if current_color == 'white':
+                    robot.drive(50,20)
+                else:
+                    print("going past line")
+                    robot.drive(100, 0)
+                    wait(100)
+                    drive()
 
 def enterspecarea(destination):
     ev3.speaker.beep()
@@ -481,25 +451,20 @@ is_holding = False
 
 mod = 1 
 speed = 50
-dark = 36
+background_color = 36
 
 color_to_fetch = Color.RED 
 
 #from left to right, (clear), (black), (Blue), (Green), (Yellow), (Red), (White), (Brown)
 
-color_reflection_dict = {"black": 9, "blue": 0, "green": 3, "yellow": 59, "red": 39, "white": 100, "brown": 5, "purple": 10}
-possible_color = ["black", "blue"] #...
+color_reflection_dict = {"black": 9, "blue": 17, "green": 13, "yellow": 59, "red": 93, "white": 100, "brown": 24, "purple": 15}
+background_reflection_dict = {"black": 10, "brown": 19, "white": 97}
 
 current_color_reflection = 0
 color_background_reflection = 9
 timer_area = 0
 
-red = ['red', (51,18,16), (36, 10, 9)]
-green = ['green', (7,31,5), (5,23,4)]
-my_colors = [red, green]
-
-
-collerline=55
+# colorline = get_colorlineAVG("green")
 
 """ if Main """
 if __name__ == '__main__':
