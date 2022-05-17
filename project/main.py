@@ -415,11 +415,10 @@ def detect_colorline():
     return (new_linereflection + background_color) / 2
 
 def get_colorlineAVG(color):
-    if color in color_background_reflection.keys():
-        return (color_reflection_dict[color] + background_color) / 2
-    else: 
-        print()
-        return 
+    try: 
+        color_reflection_dict[color]
+    except: 
+        return
 
 def right_wharhouse(colur):
     if colur=='red':
