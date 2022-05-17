@@ -15,32 +15,52 @@ import time
 import __init__
 
 """ Funktioner """
-def main():
-    # print(detect_colorline())
-    while True: 
-        print(color_sensor.reflection())
+def main(): 
+    # while True:
+    #     input()
+    #     rgb = color_sensor.rgb()
+    #     color = Rgb_to_color(rgb)
+    #     print(rgb, color)
+
+    exit_warehouse()
+    
+    # while True:
+    #     collisionavoidence()
+    # enterspecarea('red')
+    
+    #destination = 'red'
+    #current_color_rgb = color_sensor.rgb()
+    #current_color = rgb_to_color(current_color_rgb)
+    #if current_color == 'brown':
+        #drive_to_correct_color(destination)
+
+    # print(touch_sensor.pressed())
+    
+    #color_button_change()
+    # check_pallet(2, -1, False)
+    # while True:
+        # Left_area('hej')
+        #crane_motor.run_angle(100, -500, Stop.HOLD, False)
+        # drive_to_correct_colour()
+        #pickup_pallet()
+
+
+    # while True:
+    #     color_button_change()
+        # Left_area('hej')
+        #crane_motor.run_angle(100, -500, Stop.HOLD, False)
+        # drive_to_correct_colour()
+        # pickup_pallet()
+
+    ##pickup_procedure(3, -1, 2000)
+
+
 
 
 #------- Start David -------
 # Koden fungerar i simulatorn men måste antagligen justeras för verkligheten
 
 # Bestämmer färg från inmatad rgb
-def rgb_to_color(rgb):
-    if min(rgb) > 65:
-        return 'white'
-    elif max(rgb) < 10:
-        return 'black'
-    elif max(rgb) == rgb[2] and min(rgb) == rgb[1]:
-        return 'purple'
-    elif max(rgb) == rgb[1] and min(rgb) == rgb[2]:
-        return 'green'
-    elif max(rgb) == rgb[0] and min(rgb) == rgb[2]:
-        return 'brown'
-    elif max(rgb) == rgb[0] and min(rgb) == rgb[1]:
-        return 'red'
-    elif max(rgb) == rgb[2] and min(rgb) == rgb[0]:
-        return 'blue'
-    return 'white'
 
 def Rgb_to_color(rgb):
     if rgb[0] <=100 and rgb[0] >=65 and rgb[1] <=100 and rgb[1] >=86 and rgb[2] <=100 and rgb[2] >=95:
@@ -53,59 +73,49 @@ def Rgb_to_color(rgb):
         return 'green'
     elif rgb[0] <=22 and rgb[0] >=12 and rgb[1] <=25 and rgb[1] >=15 and rgb[2] <=21 and rgb[2] >=11:
         return 'brown'
-    elif rgb[0] <=75 and rgb[0] >=65 and rgb[1] <=30 and rgb[1] >=20 and rgb[2] <=44 and rgb[2] >=34:
+    elif rgb[0] <=60 and rgb[0] >=50 and rgb[1] <=25 and rgb[1] >=15 and rgb[2] <=40 and rgb[2] >=30:
         return 'red'
-    elif rgb[0] <=15 and rgb[0] >=5 and rgb[1] <=32 and rgb[1] >=22 and rgb[2] <=56 and rgb[2] >=42:
+    elif rgb[0] <=20 and rgb[0] >=10 and rgb[1] <=40 and rgb[1] >=35 and rgb[2] <=85 and rgb[2] >=75:
         return 'blue'
+    elif rgb[0] <=22 and rgb[0] >=11 and rgb[1] <=25 and rgb[1] >=3 and rgb[2] <=21 and rgb[2] >=3:
+        return 'yellow'
     else:
         return 'white'
 
-# Tar sig tillbaka till banan från warehouse
-def exit_warehouse():
 
-    # (Start 1) Åker rakt fram till kanten av warehouset
+def exit_warehouse(dest):
+
+    if dest == 'red':
+        side = -1
+    else: 
+        side = 1
+
+    robot.turn(90*side)
+
     rgb = color_sensor.rgb()
-    color = rgb_to_color(rgb)
+    color = Rgb_to_color(rgb)
     while color != 'white':
         robot.drive(30, 0)
         rgb = color_sensor.rgb()
-        color = rgb_to_color(rgb)
-    # (Slut 1)
+        color = Rgb_to_color(rgb)
+        print(rgb, color)
+    ev3.speaker.beep()
+    thread_text(text=color)
 
-    # (Start 2) Åker i bågar längst kanten av warehouset tills den hittar linjen
     exit = False
     while not exit:
+        rgb = color_sensor.rgb()
+        color = Rgb_to_color(rgb)
+        print(rgb,color)
+        if color == 'white':
+            robot.drive(30,20*side)
+        elif color == dest:
+            exit = True
+        else:
+            robot.drive(30,-40*side)
 
-        # (Start 3) Åker i en båge tills färgen inte längre är vid
-        while color == 'white':
-            robot.drive(30, 40) # !!! Värdena här kan behöva justeras !!!
-            rgb = color_sensor.rgb()
-            color = rgb_to_color(rgb)
-        # (Slut 3)
-
-        # (Start 4) Kör rakt fram 100 gånger. För att se om den är vid banan
-        for i in range(100): # !!! rangen kan behöva justeras !!!
-            rgb = color_sensor.rgb()
-            color = rgb_to_color(rgb)
-            # Blir färgen vit är den vid banan och 'exit' blir True
-            if color == 'white':
-                exit = True
-                print(exit)
-            robot.drive(30,0)
-        # (Slut 4)
-
-        # (Start 5) Är 'exit' False så är den inte vid banan och 
-        # vänder då 180 grader för att vändas mot kanten av warehouset igen
-        if not exit:
-            robot.turn(180) # !!! Graderna kan behöva justeras !!!
-            # Kör till kanten av warehouset efter att ha vänt
-            while color != 'white':
-                robot.drive(30, 0)
-                rgb = color_sensor.rgb()
-                color = rgb_to_color(rgb)
-        # (Slut 5)
     robot.stop()
-    # (Slut 2)
+
 
 def Left_area(curent_color):
     """ Temp """
@@ -413,29 +423,6 @@ def drive_to_correct_color(destination):
                     wait(100)
                     drive()
 
-def enterspecarea(destination):
-    ev3.speaker.beep()
-    color = color_sensor.rgb()
-    result = rgb_to_color(color)
-    while result != 'brown':
-        drive()
-        color = color_sensor.rgb()
-        result = rgb_to_color(color, result)
-    robot.turn(-120)
-    while result != destination:
-        if result != 'brown':
-            robot.straight(20)
-            print(result)
-        drive()
-        color = color_sensor.rgb()
-        result = rgb_to_color(color, result)
-    robot.turn(-120)
-    while result != 'black':
-        drive()
-        color = color_sensor.rgb()
-        result = rgb_to_color(color, result)
-    return 'done'
-
 
 """ Variabler """
 ev3 = EV3Brick()
@@ -464,7 +451,7 @@ current_color_reflection = 0
 color_background_reflection = 9
 timer_area = 0
 
-# colorline = get_colorlineAVG("green")
+colorline = get_colorlineAVG("green")
 
 """ if Main """
 if __name__ == '__main__':
