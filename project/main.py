@@ -94,13 +94,13 @@ def exit_warehouse():
         while color == 'white':
             robot.drive(30, 40) # !!! Värdena här kan behöva justeras !!!
             rgb = color_sensor.rgb()
-            color = rgb_to_color(rgb)
+            color = Rgb_to_color(rgb)
         # (Slut 3)
 
         # (Start 4) Kör rakt fram 100 gånger. För att se om den är vid banan
         for i in range(100): # !!! rangen kan behöva justeras !!!
             rgb = color_sensor.rgb()
-            color = rgb_to_color(rgb)
+            color = Rgb_to_color(rgb)
             # Blir färgen vit är den vid banan och 'exit' blir True
             if color == 'white':
                 exit = True
@@ -116,7 +116,7 @@ def exit_warehouse():
             while color != 'white':
                 robot.drive(30, 0)
                 rgb = color_sensor.rgb()
-                color = rgb_to_color(rgb)
+                color = Rgb_to_color(rgb)
         # (Slut 5)
     robot.stop()
     # (Slut 2)
@@ -426,29 +426,6 @@ def drive_to_correct_color(destination):
                 robot.drive(100, 0)
                 wait(100)
                 drive()
-
-def enterspecarea(destination):
-    ev3.speaker.beep()
-    color = color_sensor.rgb()
-    result = rgb_to_color(color)
-    while result != 'brown':
-        drive()
-        color = color_sensor.rgb()
-        result = rgb_to_color(color, result)
-    robot.turn(-120)
-    while result != destination:
-        if result != 'brown':
-            robot.straight(20)
-            print(result)
-        drive()
-        color = color_sensor.rgb()
-        result = rgb_to_color(color, result)
-    robot.turn(-120)
-    while result != 'black':
-        drive()
-        color = color_sensor.rgb()
-        result = rgb_to_color(color, result)
-    return 'done'
 
 
 """ Variabler """
