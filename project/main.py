@@ -21,14 +21,18 @@ def main():
     #     collisionavoidence()
     # enterspecarea('red')
     """ Temp """
-    #destination = 'red'
+    destination = 'purple'
     #current_color_rgb = color_sensor.rgb()
-    #current_color = rgb_to_color(current_color_rgb)
-    #if current_color == 'brown':
-        #drive_to_correct_color(destination)
+    print(color_sensor.rgb())
+    current_color = Rgb_to_color(color_sensor.rgb())
+    print(current_color)
+    if current_color == 'brown':
+        drive_to_correct_color(destination)
+    drive()
+
 
     # print(touch_sensor.pressed())
-    
+
     #color_button_change()
     # check_pallet(2, -1, False)
     # while True:
@@ -44,10 +48,6 @@ def main():
         #crane_motor.run_angle(100, -500, Stop.HOLD, False)
         # drive_to_correct_colour()
         # pickup_pallet()
-
-    ##pickup_procedure(3, -1, 2000)
-
-    drive_to_pickup()
 
 
 
@@ -163,128 +163,68 @@ def misplaced_item():
 
 def pickup_pallet():
     """ Temp """
-    print("jag har gått in i funktionen")
     global is_holding
     #Här måste den först identifiera att den kan plocka upp, vänta på specifikationer
 
     # Checkar så att den inte redan har lyft upp objektet och ifall objektet är på "gaffeln"
     if not is_holding:
         #sätter graderna på 0 för att förenkla mätandet sedan
-        print("jag vet att jag inte håller något")
+
         #Lyfter tills kranen har lyft objektet 45 grader upp eller 
         #tills den tappar objektet
-    
-        amount_of_tries = [-3,-2,-1]
-        while crane_motor.angle() < 150 and amount_of_tries[-1] != amount_of_tries[-2]:
-            print("jag har börjat lyfta")
+        while crane_motor.angle() < 100:
+            
             #cycle = 100  
             crane_motor.dc(100)
             print(crane_motor.angle())
-            amount_of_tries.append(crane_motor.angle())
-            print(amount_of_tries)
-            print(amount_of_tries[-1],amount_of_tries[-2])
-        
         crane_motor.hold()
+        wait(2000)
         #crane_motor.run(0)
         print(touch_sensor.pressed())
         #Om den fortfarande håller objektet registreras det
         if touch_sensor.pressed():
             is_holding = True
             #Om den tappade objektet går den ned igen
-        # else:
-        #     while crane_motor.angle() >= 0:
-        #         crane_motor.run_angle(100, -500, Stop.HOLD, False)
-        #         crane_motor.hold()
-        crane_motor.hold()
-        
-        wait(5000)
+        else:
+            while crane_motor.angle() >= 0:
+                crane_motor.run_angle(100, -500, Stop.HOLD, False)
+                crane_motor.hold()
     #Ser till så att den håller uppe lasten när den väl har plockat upp 
 
 def pickup_procedure(tries, direction, distance):
-    has_picked_up = False
     for x in range(tries):
                 if ultrasonic_sensor.distance() > distance:
-                    robot.turn(direction * -123)
+                    robot.turn(direction * -120)
                     robot.straight(180)
-                    robot.turn(direction * 123)
+                    robot.turn(direction * 120)
                 elif ultrasonic_sensor.distance() < distance:
                     drive_to_pickup()
-                    has_picked_up = True
-                    
                 
-                if has_picked_up:
+                if touch_sensor.pressed():
                     x = tries
 
 def drive_to_pickup():
-    while touch_sensor.pressed() == False:
-        robot.drive(100, 0)
-    robot.drive(0, 0)
+    robot.drive(200, 0)
     if touch_sensor.pressed() and ultrasonic_sensor.distance() < 400:
         pick_up_elevated()
-    elif touch_sensor.pressed() and ultrasonic_sensor.distance() > 400:
+    elif touch_sensor.pressed and ultrasonic_sensor.distance() > 400:
         pickup_pallet()
-
 
 def pick_up_elevated():
     fork_length = 100
     #backar
     robot.straight(fork_length * -1)
     #höjer kran
-    while crane_motor.angle() < 100:
-            print("jag har börjat lyfta")
-            #cycle = 100  
-            crane_motor.dc(35)
-    crane_motor.hold()
+    crane_motor.run_angle(30, 300, Stop.COAST)
     #kör in och plockar upp när den rör touchsensorn
-    robot.straight(fork_length)
-    
-    while crane_motor.angle() < 150:
-            print("jag har börjat lyfta 2")
-            #cycle = 100  
-            crane_motor.dc(100)
+    robot.drive(100)
+    if touch_sensor.pressed:
+        robot.drive(0)
+        crane_motor.run_angle(30, 320, Stop.COAST)
     #backar ut och sänker den
-    crane_motor.hold()
-    robot.straight((fork_length + 20)*-1)
-    while crane_motor.angle() > 130:
-            print("jag har börjat sänka")
-            #cycle = 100  
-            crane_motor.dc(-50)
-    
-    
+    robot.straight((fork_length + 10)*-1)
+    crane_motor.run_angle(30, 250, Stop.COAST)
     #return to track
-
-def reset_angle():
-    while crane_motor.angle() > 0:
-            #cycle = 100  
-            crane_motor.dc(-50)
-
-def check_pallet(tries, direction):
-    robot.straight(70)
-    robot.turn(direction * -124)
-
-    if ultrasonic_sensor.distance() < 2000:
-        robot.drive(100, 0)
-        if touch_sensor.pressed() and ultrasonic_sensor.distance() < 400:
-            pick_up_elevated()
-        elif touch_sensor.pressed() and ultrasonic_sensor.distance() > 400:
-            pickup_pallet()
-    else:
-        
-        robot.turn(direction* 124)
-        robot.straight(180)
-        robot.turn(direction * -124)
-        if ultrasonic_sensor.distance() < 2000:
-            robot.drive(200, 0)
-            if touch_sensor.pressed() and ultrasonic_sensor.distance() < 400:
-                pick_up_elevated()
-            elif touch_sensor.pressed() and ultrasonic_sensor.distance() > 400:
-                pickup_pallet()
-            
-        else:
-            robot.turn(direction* 124)
-            robot.straight(-180)
-            pickup_procedure(tries, direction, 2000)
-            #åker tillbaka, hur vet jag inte
 
 def secified_colur(colur):  #in dropof and delevery
     if colur==1:#orange
@@ -353,27 +293,25 @@ def liftdown_pallet():
 #         motor_left.run(180 * speed_modifier) 
 
 def collisionavoidence():
-    """ Temp """
+    """ Slow down depending how close the opstical is. """
     
-    
-    
-    if ultrasonic_sensor.distance() < 400 and ultrasonic_sensor.distance() > 350:
+    if ultrasonic_sensor.distance() < 450 and ultrasonic_sensor.distance() > 400:
         thread_text(30,50,'D-speed1', 1)
         return 0.8
         
-    elif ultrasonic_sensor.distance() < 350 and ultrasonic_sensor.distance() > 300:
+    elif ultrasonic_sensor.distance() < 400 and ultrasonic_sensor.distance() > 350:
         thread_text(30,50,'D-speed2', 1)
         return 0.6 
 
-    elif ultrasonic_sensor.distance() < 300 and ultrasonic_sensor.distance() > 250:
+    elif ultrasonic_sensor.distance() < 350 and ultrasonic_sensor.distance() > 300:
         thread_text(30,50,'D-speed3', 1)
         return 0.4
 
-    elif ultrasonic_sensor.distance() < 250 and ultrasonic_sensor.distance() > 230:
+    elif ultrasonic_sensor.distance() < 300 and ultrasonic_sensor.distance() > 250:
         thread_text(30,50,'D-speed4', 1)
         return 0.2
 
-    elif ultrasonic_sensor.distance() < 230:
+    elif ultrasonic_sensor.distance() < 250:
         thread_text(30,50,'Full stop!', 1)
         return 0.0
 
@@ -486,20 +424,11 @@ def drive_to_correct_color(destination):
             robot.drive(50, -90)
             wait(1700)
             going = False 
-<<<<<<< HEAD
             while current_color != destination:
                 robot.drive(50, -90)
 
         if current_color == 'brown':
             print('follow line')
-=======
-        if current_color == 'brown':
-            drive()
-        else:
-            print("going past line")
-            robot.drive(speed, 0)
-            wait(30)
->>>>>>> c2a78fd093dada31e58f61733cf90df485b10f59
             drive()
         else:
             if current_color == 'white':
@@ -565,12 +494,7 @@ red = ['red', (51,18,16), (36, 10, 9)]
 green = ['green', (7,31,5), (5,23,4)]
 my_colors = [red, green]
 
-<<<<<<< HEAD
 collerline=55
-=======
-#current_color = rgb_to_color()
-
->>>>>>> c2a78fd093dada31e58f61733cf90df485b10f59
 """ if Main """
 if __name__ == '__main__':
     sys.exit(main())
