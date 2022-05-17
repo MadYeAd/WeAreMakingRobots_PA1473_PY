@@ -17,20 +17,24 @@ import __init__
 """ Funktioner """
 def main(): 
 
-    exit_warehouse()
+  
+
+    #exit_warehouse()
     
     # while True:
     #     collisionavoidence()
     # enterspecarea('red')
-    
-    #destination = 'red'
-    #current_color_rgb = color_sensor.rgb()
-    print(color_sensor.rgb())
-    current_color = Rgb_to_color(color_sensor.rgb())
-    print(current_color)
-    if current_color == 'brown':
-        drive_to_correct_color(destination)
-    drive()
+    while True:
+        # print(color_sensor.reflection())
+        drive()
+         
+        # print(color_sensor.rgb())
+        # current_color = Rgb_to_color(color_sensor.rgb())
+        # print(current_color)
+        # if current_color == 'brown':
+        #                                               # måste kanske säga till den att sbäna lite.
+        #     drive_to_correct_color(destination)
+        # drive()
 
 
     # print(touch_sensor.pressed())
@@ -124,7 +128,7 @@ def exit_warehouse():
                 robot.drive(30, 0)
                 rgb = color_sensor.rgb()
                 color = Rgb_to_color(rgb)
-        # (Slut 5)
+
     robot.stop()
     # (Slut 2)
 
@@ -318,39 +322,63 @@ def hold_fork(speed, target_angle):
     crane_motor.run_target(speed, target_angle, then=Stop.HOLD, wait=False)
 
 def drive():
-    """ Folow a line with one sensor """ # are going to give more ditail
-    global collerline
+    """ Folow a line with one sensor
+    blue =19
+    red = 76
+    purple = 16
+    brown = 23
+    green = 13
+    """
+  # are going to give more ditail
+    
     global speed
     speed_modifier = collisionavoidence()
+    print(Rgb_to_color(color_sensor.rgb()))
     if not Rgb_to_color(color_sensor.rgb()) == 'white':
-        collerline= detect_colorline()
-    
-    correction = (collerline - color_sensor.reflection()) * 1.65 # Öka för att svänga mer # changed the av to detect_colorline so that it sould run nicely on all colour.
+        colorline = detect_colorline()
+    else:
+        colorline = 80
+    print(colorline)
+    correction = (colorline - color_sensor.reflection()) * 2.00 # Öka för att svänga mer # changed the av to detect_colorline so that it sould run nicely on all colour.
+    print(color_sensor.reflection())
+    print(correction)
     if touch_sensor.pressed() and not is_holding:
         print_text_to_screen(40,50,'Missplased item', 30)
 
     if correction >= 6 or correction <=-4: # 6(a) är hur långt in på linjen och -4(b) är när den svänger in mot linjen
         speed_modifier *= 0.2
         if correction <=-4:# #Ska vara överäns med if-satsen (b)
-            mod=correction*(-2)#Öka om skarpare ytterkurver
+            mod=correction*(-2) #Öka om skarpare ytterkurver
         else:
-            mod = correction*3.5#Öka om skarpare innerkurvor
+            mod = correction*3.5 #Öka om skarpare innerkurvor
         modifier=0.55-(mod/1000) # öka första variablenför att minska föränding av hastighet
         
         speed_modifier -= modifier
-
+    else:
+        correction=0
     if speed_modifier < 0:
         mod_speed = speed * (speed_modifier*(-1))
     else:
         mod_speed = speed * (speed_modifier)
-    mod_speed = speed * speed_modifier #temp to positive
+    # mod_speed = speed * -speed_modifier 
 
     robot.drive(mod_speed , correction)
 
+def reflection_on_color():
+    current_color = Rgb_to_color(color_sensor.rgb())
+    global dark 
+    global light 
+    if current_color == 'red':
+        dark = 90
+        light = 100
+    elif current_color == 'blue':
+        dark = 19
+        light = 50
+
+
 def detect_colorline():
     color = color_sensor.rgb()
-    current_color_detected = Rgb_to_color(color)
-    new_linereflection = color_reflection_dict[current_color_detected]
+    new_linereflection = color_reflection_dict[Rgb_to_color(color)]
 
     return (new_linereflection + dark) / 2
 
@@ -422,15 +450,17 @@ touch_sensor = TouchSensor(Port.S1)
 is_holding = False
 
 mod = 1 
-speed = 50
-dark = 36
+speed = 100
+dark = 30
+light = 50
+
+destination = 'red'
 
 color_to_fetch = Color.RED 
 
 #from left to right, (clear), (black), (Blue), (Green), (Yellow), (Red), (White), (Brown)
 
-color_reflection_dict = {"black": 9, "blue": 0, "green": 3, "yellow": 59, "red": 39, "white": 100, "brown": 5, "purple": 10}
-possible_color = ["black", "blue"] #...
+color_reflection_dict = {"black": 9, "blue": 17, "green": 13, "red": 93, "white": 100, "brown": 24, "purple": 15}
 
 current_color_reflection = 0
 color_background_reflection = 9
@@ -441,7 +471,7 @@ green = ['green', (7,31,5), (5,23,4)]
 my_colors = [red, green]
 
 
-collerline=55
+
 
 """ if Main """
 if __name__ == '__main__':
