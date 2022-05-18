@@ -16,23 +16,24 @@ import __init__
 
 """ Funktioner """
 def main(): 
-    # while True:
+    while True:
     #     input()
     #     rgb = color_sensor.rgb()
     #     color = Rgb_to_color(rgb)
     #     print(rgb, color)
 
-    while True:
+    # while True:
     # print(color_sensor.reflection())
-        drive()
-        
-    # print(color_sensor.rgb())
-    # current_color = Rgb_to_color(color_sensor.rgb())
-    # print(current_color)
-    # if current_color == 'brown':
-    #                                               # måste kanske säga till den att sbäna lite.
-    #     drive_to_correct_color(destination)
-    # drive()
+
+        # print(color_sensor.rgb())
+        current_color = Rgb_to_color(color_sensor.rgb())
+        # print(current_color)
+        # print_text_to_screen(0,0,'',1)
+        destination = 'blue'
+        if current_color == 'brown':
+                                                    # måste kanske säga till den att sbäna lite.
+            drive_to_correct_color(destination)
+            drive()
 
     #exit_warehouse()
     
@@ -67,10 +68,8 @@ def main():
     ##pickup_procedure(3, -1, 2000)
 
     #drive_to_pickup()
-    pickup_procedure(3, 1, 550)
-
-
-
+    # pickup_procedure(3, 1, 550)
+    return 0
 
 #------- Start David -------
 # Koden fungerar i simulatorn men måste antagligen justeras för verkligheten
@@ -78,22 +77,22 @@ def main():
 # Bestämmer färg från inmatad rgb
 
 def Rgb_to_color(rgb):
-    if rgb[0] <=100 and rgb[0] >=65 and rgb[1] <=100 and rgb[1] >=86 and rgb[2] <=100 and rgb[2] >=95:
+    if rgb[0] <=100 and rgb[0] >=60 and rgb[1] <=100 and rgb[1] >=65 and rgb[2] <=100 and rgb[2] >=95:
         return 'white'
     elif rgb[0] <=10 and rgb[0] >=0 and rgb[1] <=10 and rgb[1] >=0 and rgb[2] <=10 and rgb[2] >=0:
         return 'black'
-    elif rgb[0] <=17 and rgb[0] >=7 and rgb[1] <=16 and rgb[1] >6 and rgb[2] <=47 and rgb[2] >=37:
+    elif rgb[0] <=17 and rgb[0] >=7 and rgb[1] <=16 and rgb[1] >6 and rgb[2] <=43 and rgb[2] >=26:
         return 'purple'
-    elif rgb[0] <=14 and rgb[0] >=4 and rgb[1] <=54 and rgb[1] >=44 and rgb[2] <=27 and rgb[2] >=17:
+    elif rgb[0] <=15 and rgb[0] >=5 and rgb[1] <=41 and rgb[1] >=31 and rgb[2] <=22 and rgb[2] >=12:
         return 'green'
-    elif rgb[0] <=22 and rgb[0] >=12 and rgb[1] <=25 and rgb[1] >=15 and rgb[2] <=21 and rgb[2] >=11:
+    elif rgb[0] <=20 and rgb[0] >=10 and rgb[1] <=20 and rgb[1] >=10 and rgb[2] <=21 and rgb[2] >=9:
         return 'brown'
-    elif rgb[0] <=60 and rgb[0] >=50 and rgb[1] <=25 and rgb[1] >=15 and rgb[2] <=40 and rgb[2] >=30:
+    elif rgb[0] <=59 and rgb[0] >=40 and rgb[1] <=24 and rgb[1] >=14 and rgb[2] <=35 and rgb[2] >=25:
         return 'red'
-    elif rgb[0] <=20 and rgb[0] >=10 and rgb[1] <=40 and rgb[1] >=35 and rgb[2] <=85 and rgb[2] >=75:
+    elif rgb[0] <=15 and rgb[0] >=5 and rgb[1] <=26 and rgb[1] >=16 and rgb[2] <=49 and rgb[2] >=33:
         return 'blue'
     elif rgb[0] <=22 and rgb[0] >=11 and rgb[1] <=25 and rgb[1] >=3 and rgb[2] <=21 and rgb[2] >=3:
-        return 'yellow'
+        return 'brown' #Yellow
     else:
         return 'white'
 
@@ -312,25 +311,25 @@ def liftdown_pallet():
 #         motor_left.run(180 * speed_modifier) 
 
 def collisionavoidence():
-    """ Temp """
+    """ change the speed depending how close objekt is """
     print(ultrasonic_sensor.distance())
-    if ultrasonic_sensor.distance() < 200 and ultrasonic_sensor.distance() > 150:
+    if ultrasonic_sensor.distance() < 450 and ultrasonic_sensor.distance() > 400:
         thread_text(40,50,'Decreasing speed1', 1)
         return 0.8
         
-    elif ultrasonic_sensor.distance() < 350 and ultrasonic_sensor.distance() > 300:
+    elif ultrasonic_sensor.distance() < 400 and ultrasonic_sensor.distance() > 350:
         thread_text(30,50,'D-speed2', 1)
         return 0.6 
 
-    elif ultrasonic_sensor.distance() < 300 and ultrasonic_sensor.distance() > 250:
+    elif ultrasonic_sensor.distance() < 350 and ultrasonic_sensor.distance() > 300:
         thread_text(30,50,'D-speed3', 1)
         return 0.4
 
-    elif ultrasonic_sensor.distance() < 250 and ultrasonic_sensor.distance() > 230:
+    elif ultrasonic_sensor.distance() < 300 and ultrasonic_sensor.distance() > 250:
         thread_text(30,50,'D-speed4', 1)
         return 0.2
 
-    elif ultrasonic_sensor.distance() < 230:
+    elif ultrasonic_sensor.distance() < 250:
         thread_text(30,50,'Full stop!', 1)
         return 0.0
     else:
@@ -410,7 +409,7 @@ def drive():
     print(color_sensor.reflection())
     print(correction)
     
-    correction = (colorline - color_sensor.reflection()) * 1.65 # Öka för att svänga mer # changed the av to detect_colorline so that it sould run nicely on all colour.
+    # correction = (colorline - color_sensor.reflection()) * 1.65 # Öka för att svänga mer # changed the av to detect_colorline so that it sould run nicely on all colour.
     if touch_sensor.pressed() and not is_holding:
         print_text_to_screen(40,50,'Missplased item', 30)
 
@@ -433,16 +432,23 @@ def drive():
 
     robot.drive(mod_speed , correction)
 
-def reflection_on_color():
-    current_color = Rgb_to_color(color_sensor.rgb())
-    global dark 
-    global light 
-    if current_color == 'red':
-        dark = 90
-        light = 100
-    elif current_color == 'blue':
-        dark = 19
-        light = 50
+# def reflection_on_color():
+#     """ this is temp and i might remove funtion"""
+#     current_color = Rgb_to_color(color_sensor.rgb())
+#     global dark 
+#     global light 
+#     if current_color == 'red':
+#         dark = 90
+#         light = 100
+#     elif current_color == 'blue':
+#         dark = 19
+#         light = 50
+
+def detect_colorline():
+    color = color_sensor.rgb()
+    new_linereflection = color_reflection_dict[Rgb_to_color(color_sensor.rbg())]
+
+    return (new_linereflection + dark) / 2
 
 
 def detect_colorline():
@@ -466,32 +472,32 @@ def right_wharhouse(colur):
         drive_to_correct_color('blue')
 
 def drive_to_correct_color(destination):
-    drive()
+    
 
-    current_color = Rgb_to_color(color_sensor)
+    
 
-    if current_color == "brown":
-        going = True
-        while going: 
-            current_color_rgb = color_sensor.rgb()
-            current_color = Rgb_to_color(current_color_rgb)
-            if current_color == destination:
-                print('im turning')
-                robot.drive(-50,0)
-                wait(900)
-                robot.drive(50, -90)
-                wait(1700)
-                going = False 
-            if current_color == 'brown':
-                drive()
-            else:
-                if current_color == 'white':
-                    robot.drive(50,20)
-                else:
-                    print("going past line")
-                    robot.drive(100, 0)
-                    wait(100)
-                    drive()
+    going = True
+    while going: 
+        current_color_rgb = color_sensor.rgb()
+        current_color = Rgb_to_color(current_color_rgb)
+        if current_color == destination: #sljdhfkjsdh
+            print('im turning')
+            # robot.drive(-50,0)
+            # wait(700)
+            # robot.drive(50, -90)
+            robot.turn(-turn_rate)
+            # wait(1300)
+            going = False 
+        elif current_color == 'brown':
+            drive()
+
+        elif current_color == 'white':
+            robot.drive(50,20)
+        else:
+            print("going past line")
+            robot.drive(100, 0)
+            wait(100)  #sjkdhfsjdjhf
+            drive()
 
 
 """ Variabler """
@@ -511,6 +517,8 @@ speed = 100
 dark = 30
 light = 50
 
+background_color = 1
+
 destination = 'red'
 
 color_to_fetch = Color.RED 
@@ -523,7 +531,7 @@ current_color_reflection = 0
 color_background_reflection = 9
 timer_area = 0
 
-colorline = get_colorlineAVG("green")
+# colorline = get_colorlineAVG("green")
 
 """ if Main """
 if __name__ == '__main__':
