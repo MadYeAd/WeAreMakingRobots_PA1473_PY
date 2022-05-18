@@ -1,4 +1,5 @@
 #!/usr/bin/env pybricks-micropython
+
 from pybricks import robotics
 from pybricks.hubs import EV3Brick
 from pybricks.ev3devices import Motor, ColorSensor, UltrasonicSensor, TouchSensor
@@ -53,8 +54,8 @@ def main():
 
     ##pickup_procedure(3, -1, 2000)
 
-    #drive_to_pickup()
-    pickup_procedure(3, 1, 550)
+    check_pallet(3, -1)
+    #pickup_procedure(3, 1, 550)
 
 
 
@@ -150,7 +151,7 @@ def pickup_pallet():
         amount_of_tries = [-3,-2,-1]
         while crane_motor.angle() < 150 and amount_of_tries[-1] != amount_of_tries[-2]:
             print("jag har börjat lyfta")
-            #cycle = 100  
+            cycle = 100  
             crane_motor.dc(100)
             print(crane_motor.angle())
             amount_of_tries.append(crane_motor.angle())
@@ -177,9 +178,9 @@ def pickup_procedure(tries, direction, distance):
     has_picked_up = False
     for x in range(tries):
                 if ultrasonic_sensor.distance() > distance:
-                    robot.turn(direction * -130)
+                    robot.turn(direction * -turn_rate)
                     robot.straight(180)
-                    robot.turn(direction * 130)
+                    robot.turn(direction * turn_rate)
                 elif ultrasonic_sensor.distance() < distance:
                     drive_to_pickup()
                     has_picked_up = True
@@ -207,25 +208,30 @@ def pick_up_elevated():
     #backar
     robot.straight(fork_length * -1)
     #höjer kran
-    while crane_motor.angle() < 100:
-            print("jag har börjat lyfta")
-            #cycle = 100  
-            crane_motor.dc(35)
+    #while crane_motor.angle() < 100:
+     #       print("jag har börjat lyfta")
+      #      #cycle = 100  
+       #     crane_motor.dc(35)
+    crane_motor.run_target(40, 100, then=Stop.HOLD, wait = True)
     crane_motor.hold()
     #kör in och plockar upp när den rör touchsensorn
     robot.straight(fork_length)
     
-    while crane_motor.angle() < 150:
-            print("jag har börjat lyfta 2")
+    #while crane_motor.angle() < 150:
+     #       print("jag har börjat lyfta 2")
             #cycle = 100  
-            crane_motor.dc(100)
+      #      crane_motor.dc(100)
     #backar ut och sänker den
-    crane_motor.hold()
+    #crane_motor.hold()
+
+    crane_motor.run_target(40, 150, then=Stop.HOLD, wait = True)
+
     robot.straight((fork_length + 20)*-1)
-    while crane_motor.angle() > 130:
-            print("jag har börjat sänka")
+    #while crane_motor.angle() > 130:
+            #print("jag har börjat sänka")
             #cycle = 100  
-            crane_motor.dc(-50)
+            #crane_motor.dc(-50)
+    crane_motor.run_target(40, 130, then=Stop.HOLD, wait = True)
     
     
     #return to track
@@ -236,22 +242,25 @@ def reset_angle():
             crane_motor.dc(-50)
 
 def check_pallet(tries, direction):
-    robot.straight(100)
-    robot.turn(direction * -130)
+    robot.turn(-turn_rate * direction)
+    robot.straight(70)
+    robot.turn(turn_rate * direction)
+    robot.straight(150)
+    robot.turn(direction * -turn_rate)
 
     if ultrasonic_sensor.distance() < 550:
         drive_to_pickup()
     else:
         
-        robot.turn(direction* 130)
-        robot.straight(180)
-        robot.turn(direction * -130)
+        robot.turn(direction* turn_rate)
+        robot.straight(240)
+        robot.turn(direction * -turn_rate)
         if ultrasonic_sensor.distance() < 550:
             drive_to_pickup()
             
         else:
-            robot.turn(direction* 130)
-            robot.straight(-180)
+            robot.turn(direction* turn_rate)
+            robot.straight(-240)
             pickup_procedure(tries, direction, 550)
             #åker tillbaka, hur vet jag inte
 
@@ -496,6 +505,7 @@ ultrasonic_sensor  = UltrasonicSensor(Port.S4)
 touch_sensor = TouchSensor(Port.S1)
 
 is_holding = False
+turn_rate = 128
 
 mod = 1 
 speed = 100
