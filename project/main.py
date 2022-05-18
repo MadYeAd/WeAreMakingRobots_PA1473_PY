@@ -22,7 +22,6 @@ def main():
     #     color = Rgb_to_color(rgb)
     #     print(rgb, color)
 
-    exit_warehouse()
     
     # while True:
     #     collisionavoidence()
@@ -188,6 +187,10 @@ def pickup_procedure(tries, direction, distance):
                 
                 if has_picked_up:
                     x = tries
+    if direction == 1:
+        exit_warehouse('blue')
+    elif direction == -1:
+        exit_warehouse('red')
     
 
 def drive_to_pickup():
@@ -484,7 +487,7 @@ current_color_reflection = 0
 color_background_reflection = 9
 timer_area = 0
 
-colorline = get_colorlineAVG("green")
+#colorline = get_colorlineAVG("green")
 
 """ if Main """
 if __name__ == '__main__':
