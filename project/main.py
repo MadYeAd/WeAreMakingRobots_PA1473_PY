@@ -93,7 +93,7 @@ def main():
 
 # Bestämmer färg från inmatad rgb
 
-def Rgb_to_color(rgb):
+def Rgb_to_color(rgb):#Fix num
     if rgb[0] <=100 and rgb[0] >=60 and rgb[1] <=100 and rgb[1] >=65 and rgb[2] <=100 and rgb[2] >=95:
         return 'white'
     elif rgb[0] <=10 and rgb[0] >=0 and rgb[1] <=10 and rgb[1] >=0 and rgb[2] <=10 and rgb[2] >=0:
@@ -343,7 +343,7 @@ def collisionavoidence():
     """ change the speed depending how close objekt is """
     # print(ultrasonic_sensor.distance())
     if ultrasonic_sensor.distance() < 450 and ultrasonic_sensor.distance() > 400:
-        thread_text(40,50,'Decreasing speed1', 1)
+        thread_text(40,50,'D-speed1', 1)
         return 0.8
         
     elif ultrasonic_sensor.distance() < 400 and ultrasonic_sensor.distance() > 350:
