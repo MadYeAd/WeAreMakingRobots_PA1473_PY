@@ -18,7 +18,7 @@ import __init__
 """ Funktioner """
 def main(): 
     destination='white'
-    destination = input('destenation  ')
+    destination = input('Destenation  ')
     while True:
 
         
@@ -450,7 +450,7 @@ def drive():
             mod = correction*(2.5) #Öka om skarpare innerkurvor
         modifier=0.55-(mod/1000) # öka första variablenför att minska föränding av hastighet
         
-        speed_modifier -= modifier
+        speed_modifier *= modifier
     else:
         correction=0
     if speed_modifier < 0:
@@ -501,9 +501,6 @@ def right_wharhouse(colur):
 
 def drive_to_correct_color(destination):
     
-     
-    
-
     going = True
     while going: 
         current_color_rgb = color_sensor.rgb()
@@ -519,7 +516,7 @@ def drive_to_correct_color(destination):
             going = False 
         elif current_color == 'brown':
             ti=0
-            while ti <= 10 and not current_color == destination:
+            while ti <= 10 and current_color != destination:
                 current_color_rgb = color_sensor.rgb()
                 current_color = Rgb_to_color(current_color_rgb)
                 print(current_color)
