@@ -379,15 +379,27 @@ def emergency_mode():
         drive_to_correct_color("green")
 
 def drive():
-    """ Folow a line with one sensor """ # are going to give more detail
-    global colorline
-    global speed
+    """ Folow a line with one sensor
+    blue =19
+    red = 76
+    purple = 16
+    brown = 23
+    green = 13
+    """
+  # are going to give more ditail
     
-    crane_motor.run_target(20, 40, then=Stop.HOLD, wait=False)
+    global speed
 
     speed_modifier = collisionavoidence()
+    print(Rgb_to_color(color_sensor.rgb()))
     if not Rgb_to_color(color_sensor.rgb()) == 'white':
         colorline = detect_colorline()
+    else:
+        colorline = 80
+    print(colorline)
+    correction = (colorline - color_sensor.reflection()) * 2.00 # Öka för att svänga mer # changed the av to detect_colorline so that it sould run nicely on all colour.
+    print(color_sensor.reflection())
+    print(correction)
     
     correction = (colorline - color_sensor.reflection()) * 1.65 # Öka för att svänga mer # changed the av to detect_colorline so that it sould run nicely on all colour.
     if touch_sensor.pressed() and not is_holding:
@@ -396,20 +408,33 @@ def drive():
     if correction >= 6 or correction <=-4: # 6(a) är hur långt in på linjen och -4(b) är när den svänger in mot linjen
         speed_modifier *= 0.2
         if correction <=-4:# #Ska vara överäns med if-satsen (b)
-            mod=correction*(-2)#Öka om skarpare ytterkurver
+            mod=correction*(-2) #Öka om skarpare ytterkurver
         else:
-            mod = correction*3.5#Öka om skarpare innerkurvor
+            mod = correction*3.5 #Öka om skarpare innerkurvor
         modifier=0.55-(mod/1000) # öka första variablenför att minska föränding av hastighet
         
         speed_modifier -= modifier
-
+    else:
+        correction=0
     if speed_modifier < 0:
         mod_speed = speed * (speed_modifier*(-1))
     else:
         mod_speed = speed * (speed_modifier)
-    mod_speed = speed * speed_modifier #temp to positive
+    # mod_speed = speed * -speed_modifier 
 
     robot.drive(mod_speed , correction)
+
+def reflection_on_color():
+    current_color = Rgb_to_color(color_sensor.rgb())
+    global dark 
+    global light 
+    if current_color == 'red':
+        dark = 90
+        light = 100
+    elif current_color == 'blue':
+        dark = 19
+        light = 50
+
 
 def detect_colorline():
     color = color_sensor.rgb()
@@ -473,15 +498,17 @@ touch_sensor = TouchSensor(Port.S1)
 is_holding = False
 
 mod = 1 
-speed = 50
-background_color = 36
+speed = 100
+dark = 30
+light = 50
+
+destination = 'red'
 
 color_to_fetch = Color.RED 
 
 #from left to right, (clear), (black), (Blue), (Green), (Yellow), (Red), (White), (Brown)
 
-color_reflection_dict = {"black": 9, "blue": 17, "green": 13, "yellow": 59, "red": 93, "white": 100, "brown": 24, "purple": 15}
-background_reflection_dict = {"black": 10, "brown": 19, "white": 97}
+color_reflection_dict = {"black": 9, "blue": 17, "green": 13, "red": 93, "white": 100, "brown": 24, "purple": 15}
 
 current_color_reflection = 0
 color_background_reflection = 9
