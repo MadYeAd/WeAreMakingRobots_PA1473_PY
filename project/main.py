@@ -1,4 +1,5 @@
 #!/usr/bin/env pybricks-micropython
+
 from pybricks import robotics
 from pybricks.hubs import EV3Brick
 from pybricks.ev3devices import Motor, ColorSensor, UltrasonicSensor, TouchSensor
@@ -16,7 +17,11 @@ import __init__
 
 """ Funktioner """
 def main(): 
+    destination='white'
+    destination = input('destenation  ')
     while True:
+
+        
     #     input()
     #     rgb = color_sensor.rgb()
     #     color = Rgb_to_color(rgb)
@@ -25,15 +30,22 @@ def main():
     # while True:
     # print(color_sensor.reflection())
 
-        # print(color_sensor.rgb())
+        # # print(color_sensor.rgb())
         current_color = Rgb_to_color(color_sensor.rgb())
-        # print(current_color)
-        # print_text_to_screen(0,0,'',1)
-        destination = 'blue'
+        print(current_color)
+        # # print_text_to_screen(0,0,'',1)
+        # destination = 'blue'
         if current_color == 'brown':
-                                                    # måste kanske säga till den att sbäna lite.
+            print('Roundabout')                                        # måste kanske säga till den att sbäna lite.
             drive_to_correct_color(destination)
-            drive()
+            while current_color != destination:
+                print('half done')
+                current_color = Rgb_to_color(color_sensor.rgb())
+                robot.drive(20,-10)
+                # print(current_color)
+                
+        print('done')
+        drive()
 
     #exit_warehouse()
     
@@ -70,6 +82,11 @@ def main():
     #drive_to_pickup()
     # pickup_procedure(3, 1, 550)
     return 0
+    # check_pallet(3, -1)
+    #pickup_procedure(3, 1, 550)
+
+
+
 
 #------- Start David -------
 # Koden fungerar i simulatorn men måste antagligen justeras för verkligheten
@@ -162,7 +179,7 @@ def pickup_pallet():
         amount_of_tries = [-3,-2,-1]
         while crane_motor.angle() < 150 and amount_of_tries[-1] != amount_of_tries[-2]:
             print("jag har börjat lyfta")
-            #cycle = 100  
+            cycle = 100  
             crane_motor.dc(100)
             print(crane_motor.angle())
             amount_of_tries.append(crane_motor.angle())
@@ -189,9 +206,9 @@ def pickup_procedure(tries, direction, distance):
     has_picked_up = False
     for x in range(tries):
                 if ultrasonic_sensor.distance() > distance:
-                    robot.turn(direction * -130)
+                    robot.turn(direction * -turn_rate)
                     robot.straight(180)
-                    robot.turn(direction * 130)
+                    robot.turn(direction * turn_rate)
                 elif ultrasonic_sensor.distance() < distance:
                     drive_to_pickup()
                     has_picked_up = True
@@ -199,6 +216,10 @@ def pickup_procedure(tries, direction, distance):
                 
                 if has_picked_up:
                     x = tries
+    if direction == 1:
+        exit_warehouse('blue')
+    elif direction == -1:
+        exit_warehouse('red')
     
 
 def drive_to_pickup():
@@ -215,25 +236,30 @@ def pick_up_elevated():
     #backar
     robot.straight(fork_length * -1)
     #höjer kran
-    while crane_motor.angle() < 100:
-            print("jag har börjat lyfta")
-            #cycle = 100  
-            crane_motor.dc(35)
+    #while crane_motor.angle() < 100:
+     #       print("jag har börjat lyfta")
+      #      #cycle = 100  
+       #     crane_motor.dc(35)
+    crane_motor.run_target(40, 100, then=Stop.HOLD, wait = True)
     crane_motor.hold()
     #kör in och plockar upp när den rör touchsensorn
     robot.straight(fork_length)
     
-    while crane_motor.angle() < 150:
-            print("jag har börjat lyfta 2")
+    #while crane_motor.angle() < 150:
+     #       print("jag har börjat lyfta 2")
             #cycle = 100  
-            crane_motor.dc(100)
+      #      crane_motor.dc(100)
     #backar ut och sänker den
-    crane_motor.hold()
+    #crane_motor.hold()
+
+    crane_motor.run_target(40, 150, then=Stop.HOLD, wait = True)
+
     robot.straight((fork_length + 20)*-1)
-    while crane_motor.angle() > 130:
-            print("jag har börjat sänka")
+    #while crane_motor.angle() > 130:
+            #print("jag har börjat sänka")
             #cycle = 100  
-            crane_motor.dc(-50)
+            #crane_motor.dc(-50)
+    crane_motor.run_target(40, 130, then=Stop.HOLD, wait = True)
     
     
     #return to track
@@ -244,22 +270,25 @@ def reset_angle():
             crane_motor.dc(-50)
 
 def check_pallet(tries, direction):
-    robot.straight(100)
-    robot.turn(direction * -130)
+    robot.turn(-turn_rate * direction)
+    robot.straight(70)
+    robot.turn(turn_rate * direction)
+    robot.straight(150)
+    robot.turn(direction * -turn_rate)
 
     if ultrasonic_sensor.distance() < 550:
         drive_to_pickup()
     else:
         
-        robot.turn(direction* 130)
-        robot.straight(180)
-        robot.turn(direction * -130)
+        robot.turn(direction* turn_rate)
+        robot.straight(240)
+        robot.turn(direction * -turn_rate)
         if ultrasonic_sensor.distance() < 550:
             drive_to_pickup()
             
         else:
-            robot.turn(direction* 130)
-            robot.straight(-180)
+            robot.turn(direction* turn_rate)
+            robot.straight(-240)
             pickup_procedure(tries, direction, 550)
             #åker tillbaka, hur vet jag inte
 
@@ -312,7 +341,7 @@ def liftdown_pallet():
 
 def collisionavoidence():
     """ change the speed depending how close objekt is """
-    print(ultrasonic_sensor.distance())
+    # print(ultrasonic_sensor.distance())
     if ultrasonic_sensor.distance() < 450 and ultrasonic_sensor.distance() > 400:
         thread_text(40,50,'Decreasing speed1', 1)
         return 0.8
@@ -399,12 +428,12 @@ def drive():
     global speed
 
     speed_modifier = collisionavoidence()
-    print(Rgb_to_color(color_sensor.rgb()))
+    # print(Rgb_to_color(color_sensor.rgb()))
     if not Rgb_to_color(color_sensor.rgb()) == 'white':
         colorline = detect_colorline()
     else:
-        colorline = 80
-    print(colorline)
+        colorline = 85
+    # print(colorline)
     correction = (colorline - color_sensor.reflection()) * 2.00 # Öka för att svänga mer # changed the av to detect_colorline so that it sould run nicely on all colour.
     print(color_sensor.reflection())
     print(correction)
@@ -416,9 +445,9 @@ def drive():
     if correction >= 6 or correction <=-4: # 6(a) är hur långt in på linjen och -4(b) är när den svänger in mot linjen
         speed_modifier *= 0.2
         if correction <=-4:# #Ska vara överäns med if-satsen (b)
-            mod=correction*(-2) #Öka om skarpare ytterkurver
+            mod=correction*(-1.7) #Öka om skarpare ytterkurver
         else:
-            mod = correction*3.5 #Öka om skarpare innerkurvor
+            mod = correction*(2.5) #Öka om skarpare innerkurvor
         modifier=0.55-(mod/1000) # öka första variablenför att minska föränding av hastighet
         
         speed_modifier -= modifier
@@ -430,7 +459,7 @@ def drive():
         mod_speed = speed * (speed_modifier)
     # mod_speed = speed * -speed_modifier 
 
-    robot.drive(mod_speed , correction)
+    robot.drive(mod_speed , -correction)
 
 # def reflection_on_color():
 #     """ this is temp and i might remove funtion"""
@@ -445,17 +474,16 @@ def drive():
 #         light = 50
 
 def detect_colorline():
-    color = color_sensor.rgb()
-    new_linereflection = color_reflection_dict[Rgb_to_color(color_sensor.rbg())]
+    new_linereflection = color_reflection_dict[Rgb_to_color(color_sensor.rgb())]
 
     return (new_linereflection + dark) / 2
 
 
-def detect_colorline():
-    color = color_sensor.rgb()
-    new_linereflection = color_reflection_dict[Rgb_to_color(color)]
+# def detect_colorline():
+#     color = color_sensor.rgb()
+#     new_linereflection = color_reflection_dict[Rgb_to_color(color)]
 
-    return (new_linereflection + background_color) / 2
+#     return (new_linereflection + background_color) / 2
 
 def get_colorlineAVG(color):
     if color in color_background_reflection.keys():
@@ -473,26 +501,39 @@ def right_wharhouse(colur):
 
 def drive_to_correct_color(destination):
     
-
+     
     
 
     going = True
     while going: 
         current_color_rgb = color_sensor.rgb()
         current_color = Rgb_to_color(current_color_rgb)
+        # print(current_color)
         if current_color == destination: #sljdhfkjsdh
             print('im turning')
             # robot.drive(-50,0)
             # wait(700)
             # robot.drive(50, -90)
-            robot.turn(-turn_rate)
+            robot.turn(-90)
             # wait(1300)
             going = False 
         elif current_color == 'brown':
-            drive()
-
+            ti=0
+            while ti <= 10 and not current_color == destination:
+                current_color_rgb = color_sensor.rgb()
+                current_color = Rgb_to_color(current_color_rgb)
+                print(current_color)
+                print('ti',ti)
+                print('follow line')
+                drive()
+                if current_color == 'white':
+                    ti+=1
+                else:
+                    ti=0
+                
         elif current_color == 'white':
-            robot.drive(50,20)
+            # print('im outside')
+            robot.drive(20,20)
         else:
             print("going past line")
             robot.drive(100, 0)
@@ -511,6 +552,7 @@ ultrasonic_sensor  = UltrasonicSensor(Port.S4)
 touch_sensor = TouchSensor(Port.S1)
 
 is_holding = False
+turn_rate = 128
 
 mod = 1 
 speed = 100
@@ -532,6 +574,7 @@ color_background_reflection = 9
 timer_area = 0
 
 # colorline = get_colorlineAVG("green")
+#colorline = get_colorlineAVG("green")
 
 """ if Main """
 if __name__ == '__main__':
