@@ -38,7 +38,8 @@ def main():
     
     #color_button_change()
     # check_pallet(2, -1, False)
-    # while True:
+    # while 
+    # :
         # Left_area('hej')
         #crane_motor.run_angle(100, -500, Stop.HOLD, False)
         # drive_to_correct_colour()
@@ -54,7 +55,8 @@ def main():
 
     ##pickup_procedure(3, -1, 2000)
 
-    check_pallet(3, -1)
+    #check_pallet(3, -1)
+    navigate_white()
     #pickup_procedure(3, 1, 550)
 
 
@@ -136,65 +138,44 @@ def Left_area(curent_color):
 #         print('Robot has left sprcific area')
 
 def pickup_pallet():
-    """ Temp """
-    print("jag har gått in i funktionen")
+    """ A function that lifts the fork, that is literally it and yes it does need 20 lines of code
+    stop asking"""
     global is_holding
-    #Här måste den först identifiera att den kan plocka upp, vänta på specifikationer
 
-    # Checkar så att den inte redan har lyft upp objektet och ifall objektet är på "gaffeln"
-    if not is_holding:
-        #sätter graderna på 0 för att förenkla mätandet sedan
-        print("jag vet att jag inte håller något")
-        #Lyfter tills kranen har lyft objektet 45 grader upp eller 
-        #tills den tappar objektet
-    
+    if not is_holding:    
         amount_of_tries = [-3,-2,-1]
         while crane_motor.angle() < 150 and amount_of_tries[-1] != amount_of_tries[-2]:
-            print("jag har börjat lyfta")
-            cycle = 100  
             crane_motor.dc(100)
-            print(crane_motor.angle())
             amount_of_tries.append(crane_motor.angle())
-            print(amount_of_tries)
-            print(amount_of_tries[-1],amount_of_tries[-2])
         
-        crane_motor.hold()
-        #crane_motor.run(0)
-        print(touch_sensor.pressed())
-        #Om den fortfarande håller objektet registreras det
-        if touch_sensor.pressed():
-            is_holding = True
-            #Om den tappade objektet går den ned igen
-        # else:
-        #     while crane_motor.angle() >= 0:
-        #         crane_motor.run_angle(100, -500, Stop.HOLD, False)
-        #         crane_motor.hold()
-        crane_motor.hold()
-        
-        wait(5000)
-    #Ser till så att den håller uppe lasten när den väl har plockat upp 
+        is_holding = True
 
-def pickup_procedure(tries, direction, distance):
+        crane_motor.hold()
+        
+        wait(2000)
+
+def pickup_procedure(tries, direction, distance, length):
+    '''A function that drives a specified length and then checks if there
+    is any pallets within a specefied distance to a specified direction
+    and then repeats it a specefied amount of times'''
     has_picked_up = False
     for x in range(tries):
                 if ultrasonic_sensor.distance() > distance:
                     robot.turn(direction * -turn_rate)
-                    robot.straight(180)
+                    robot.straight(length)
                     robot.turn(direction * turn_rate)
                 elif ultrasonic_sensor.distance() < distance:
                     drive_to_pickup()
                     has_picked_up = True
                     
-                
                 if has_picked_up:
                     x = tries
-    if direction == 1:
-        exit_warehouse('blue')
-    elif direction == -1:
-        exit_warehouse('red')
+   
     
 
 def drive_to_pickup():
+    '''Drives forward and picksup a pallet. If there is a pallet
+    on top of it, it picks it up instead'''
     while touch_sensor.pressed() == False:
         robot.drive(100, 0)
     robot.drive(0, 0)
@@ -204,84 +185,69 @@ def drive_to_pickup():
         pickup_pallet()
 
 def pick_up_elevated():
+    '''Picks up a pallet on top of another pallet'''
     fork_length = 100
-    #backar
+
     robot.straight(fork_length * -1)
-    #höjer kran
-    #while crane_motor.angle() < 100:
-     #       print("jag har börjat lyfta")
-      #      #cycle = 100  
-       #     crane_motor.dc(35)
+    
     crane_motor.run_target(40, 100, then=Stop.HOLD, wait = True)
     crane_motor.hold()
-    #kör in och plockar upp när den rör touchsensorn
+
     robot.straight(fork_length)
-    
-    #while crane_motor.angle() < 150:
-     #       print("jag har börjat lyfta 2")
-            #cycle = 100  
-      #      crane_motor.dc(100)
-    #backar ut och sänker den
-    #crane_motor.hold()
 
     crane_motor.run_target(40, 150, then=Stop.HOLD, wait = True)
 
     robot.straight((fork_length + 20)*-1)
-    #while crane_motor.angle() > 130:
-            #print("jag har börjat sänka")
-            #cycle = 100  
-            #crane_motor.dc(-50)
+
     crane_motor.run_target(40, 130, then=Stop.HOLD, wait = True)
     
-    
-    #return to track
 
 def reset_angle():
     while crane_motor.angle() > 0:
-            #cycle = 100  
             crane_motor.dc(-50)
 
-def check_pallet(tries, direction):
-    robot.turn(-turn_rate * direction)
+def navigate_small(tries, direction):
+    '''Navigate one of the small warehouses depending on the given direction'''
+    robot.turn(-turn_rate*direction)
     robot.straight(70)
     robot.turn(turn_rate * direction)
-    robot.straight(150)
+    robot.straight(180)
     robot.turn(direction * -turn_rate)
 
-    if ultrasonic_sensor.distance() < 550:
+    if ultrasonic_sensor.distance() < 500:
         drive_to_pickup()
     else:
         
         robot.turn(direction* turn_rate)
-        robot.straight(240)
+        robot.straight(270)
         robot.turn(direction * -turn_rate)
-        if ultrasonic_sensor.distance() < 550:
+        if ultrasonic_sensor.distance() < 500:
             drive_to_pickup()
             
         else:
             robot.turn(direction* turn_rate)
-            robot.straight(-240)
-            pickup_procedure(tries, direction, 550)
-            #åker tillbaka, hur vet jag inte
+            robot.straight(-270)
+            pickup_procedure(tries, direction, 550, 190)
+
+    if direction == 1:
+        exit_warehouse('blue')
+    elif direction == -1:
+        exit_warehouse('red')
 
 def navigate_white():
-    robot.straight(40)
-    robot.turn(124)
-    pickup_procedure(5, 1, 700)
-    if touch_sensor.pressed() == False:
-        robot.turn(248)
-        pickup_procedure(5, 1, 700)
+    '''Navigates the white warehouse'''
+    robot.straight(70)
+    robot.turn(turn_rate)
+    pickup_procedure(5, 1, 700, 200)
+    if crane_motor.angle() > 100:
+        robot.turn(turn_rate * 2)
+        pickup_procedure(5, 1, 700, 130)
     
-    if touch_sensor.pressed() == False:
+    if crane_motor.angle() > 100:
         robot.straight(100)
         robot.turn(124)
-        pickup_procedure(6, -1, 1000)
-
-def test_distance():
-    
-    print(ultrasonic_sensor.distance())
+        pickup_procedure(6, -1, 1000, 150)
         
-
 def secified_colur(colur):  #in dropof and delevery
     if colur==1:#orange
         return 'left'
@@ -290,7 +256,7 @@ def secified_colur(colur):  #in dropof and delevery
 
 
 def liftdown_pallet():
-    """ Temp """
+    """ lowers the fork """
     if is_holding and touch_sensor.pressed():
 
         return
@@ -505,7 +471,7 @@ ultrasonic_sensor  = UltrasonicSensor(Port.S4)
 touch_sensor = TouchSensor(Port.S1)
 
 is_holding = False
-turn_rate = 128
+turn_rate = 124
 
 mod = 1 
 speed = 100
