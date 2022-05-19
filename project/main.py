@@ -444,7 +444,7 @@ def right_wharhouse(colur):
         drive_to_correct_color('blue')
 
 def drive_to_correct_color(destination):
-    
+    """Takes in a color string input and makes an attempt to navigate to the matching color line"""
     going = True
     while going: 
         current_color_rgb = color_sensor.rgb()
