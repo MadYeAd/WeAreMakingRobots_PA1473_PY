@@ -18,10 +18,8 @@ import __init__
 """ Funktioner """
 def main(): 
     destination='white'
-    destination = input('Destenation  ')
+    destination = input('Destination ')
     while True:
-
-        
     #     input()
     #     rgb = color_sensor.rgb()
     #     color = Rgb_to_color(rgb)
@@ -87,8 +85,6 @@ def main():
     #pickup_procedure(3, 1, 550)
 
 
-
-
 #------- Start David -------
 # Koden fungerar i simulatorn men måste antagligen justeras för verkligheten
 
@@ -116,7 +112,6 @@ def Rgb_to_color(rgb):#Fix num
 
 
 def exit_warehouse(dest):
-
     if dest == 'red':
         side = -1
     else: 
@@ -147,7 +142,6 @@ def exit_warehouse(dest):
             robot.drive(30,-40*side)
 
     robot.stop()
-
 
 def Left_area(curent_color):
     """ Temp """
@@ -196,9 +190,7 @@ def pickup_procedure(tries, direction, distance, length):
                     has_picked_up = True
                     
                 if has_picked_up:
-                    x = tries
-   
-    
+                    x = tries  
 
 def drive_to_pickup():
     '''Drives forward and picksup a pallet. If there is a pallet
@@ -275,19 +267,11 @@ def navigate_white():
         robot.turn(124)
         pickup_procedure(6, -1, 1000, 150)
         
-def secified_colur(colur):  #in dropof and delevery
+def specified_colur(colur):  #in dropof and delevery
     if colur==1:#orange
         return 'left'
     else:
         return 'right'
-
-
-def liftdown_pallet():
-    """ lowers the fork """
-    if is_holding and touch_sensor.pressed():
-
-        return
-    return
 
 # def motors_perform(action, speed_modifier):
 #     """ Temp """
@@ -331,6 +315,8 @@ def collisionavoidence():
 
 def color_button_change():
     """ Color fetcher/changer with the help of the buttons. """
+    """Untested"""
+
     button = brick.buttons()
 
     if Button.LEFT in button:
@@ -357,6 +343,9 @@ def hold_fork():
     crane_motor.run_target(20, 40, then=Stop.HOLD, wait=False)
 
 def misplaced_item():
+    """"Checks if there is a palette in its path by seeing if something is holding down the touch sensor. 
+    If the touch sensor activate it goes into emergancy mode"""
+
     global is_holding
     if touch_sensor.pressed() and not is_holding:
         print_text_to_screen(40,50,'Misplaced item', 30)
@@ -365,11 +354,9 @@ def misplaced_item():
     if ultrasonic_sensor.distance() > 100:
         return 
 
-def abort_collection():
-
-    return
-
 def emergency_mode():
+    """Untested user story"""
+
     #return to warehouse 
     robot.straight(-150)
     robot.turn(90)
@@ -381,14 +368,14 @@ def emergency_mode():
         drive_to_correct_color("green")
 
 def drive():
-    """ Folow a line with one sensor
+    """ 
+    Follow the line by checking the average value of the line and the background color.
     blue =19
     red = 76
     purple = 16
     brown = 23
     green = 13
     """
-  # are going to give more ditail
     
     global speed
 
@@ -442,13 +429,6 @@ def detect_colorline():
     new_linereflection = color_reflection_dict[Rgb_to_color(color_sensor.rgb())]
 
     return (new_linereflection + dark) / 2
-
-
-# def detect_colorline():
-#     color = color_sensor.rgb()
-#     new_linereflection = color_reflection_dict[Rgb_to_color(color)]
-
-#     return (new_linereflection + background_color) / 2
 
 def get_colorlineAVG(color):
     try: 
@@ -523,10 +503,6 @@ light = 50
 background_color = 1
 
 destination = 'red'
-
-color_to_fetch = Color.RED 
-
-#from left to right, (clear), (black), (Blue), (Green), (Yellow), (Red), (White), (Brown)
 
 color_reflection_dict = {"black": 9, "blue": 17, "green": 13, "red": 93, "white": 100, "brown": 24, "purple": 15}
 
