@@ -17,6 +17,7 @@ import __init__
 
 """ Funktioner """
 def main(): 
+
     destination='white'
     destination = input('Destination ')
     while True:
@@ -112,12 +113,6 @@ def Rgb_to_color(rgb):#Fix num
 
 
 def exit_warehouse(dest):
-    if dest == 'red':
-        side = -1
-    else: 
-        side = 1
-
-    robot.turn(90*side)
 
     rgb = color_sensor.rgb()
     color = Rgb_to_color(rgb)
@@ -135,11 +130,11 @@ def exit_warehouse(dest):
         color = Rgb_to_color(rgb)
         print(rgb,color)
         if color == 'white':
-            robot.drive(30,20*side)
+            robot.drive(30,20)
         elif color == dest:
             exit = True
         else:
-            robot.drive(30,-40*side)
+            robot.drive(30,-40)
 
     robot.stop()
 
@@ -273,20 +268,6 @@ def specified_colur(colur):  #in dropof and delevery
     else:
         return 'right'
 
-# def motors_perform(action, speed_modifier):
-#     """ Temp """
-#     if action == "hold":
-#         robot.drive(0,0)
-#     elif action == "forward":
-#         # motor_right.run(360 * speed_modifier)
-#         # motor_left.run(360 * speed_modifier)
-#         robot.drive(36 * speed_modifier,0)
-#     elif action == "left":
-#         motor_right.run(180 * speed_modifier)
-#         motor_left.run(-180 * speed_modifier)
-#     elif action == "right":
-#         motor_right.run(-180 * speed_modifier)
-#         motor_left.run(180 * speed_modifier) 
 
 def collisionavoidence():
     """ change the speed depending how close objekt is """
