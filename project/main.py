@@ -111,7 +111,7 @@ def Rgb_to_color(rgb):#Fix num
         return 'white'
 
 
-def exit_warehouse():
+def exit_warehouse(dest):
 
     rgb = color_sensor.rgb()
     color = Rgb_to_color(rgb)
@@ -130,7 +130,7 @@ def exit_warehouse():
         print(rgb,color)
         if color == 'white':
             robot.drive(30,20)
-        elif color == 'blue':
+        elif color == dest:
             exit = True
         else:
             robot.drive(30,-40)
