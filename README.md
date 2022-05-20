@@ -23,12 +23,14 @@ Sprint 1
 - [X] Be informed by what operation a truck is performing
 
 Sprint 2
-- [ ] Return to the specified area in a safe manner
-- [ ] Have a truck follow a specified path from multiple options
-- [ ] Have a truck pick up an item from an elevated surface
+- [X] Return to the specified area in a safe manner
+- [X] Have a truck follow a specified path from multiple options
+- [X] Have a truck pick up an item from an elevated surface
 
 Sprint 3
-- [ ] Exit the specified area in a safe manner
+- [X] Exit the specified area in a safe manner
 - [ ] Have a truck recognize a misplaced item
 - [ ] Abort the collection of an item
 - [ ] Change the colour specification of a pickup - item without aborting the operation
+- [X] Optimize the time it takes to collect a pickup-item
+- [ ] Emergency mode (untested)
