@@ -273,20 +273,6 @@ def specified_colur(colur):  #in dropof and delevery
     else:
         return 'right'
 
-# def motors_perform(action, speed_modifier):
-#     """ Temp """
-#     if action == "hold":
-#         robot.drive(0,0)
-#     elif action == "forward":
-#         # motor_right.run(360 * speed_modifier)
-#         # motor_left.run(360 * speed_modifier)
-#         robot.drive(36 * speed_modifier,0)
-#     elif action == "left":
-#         motor_right.run(180 * speed_modifier)
-#         motor_left.run(-180 * speed_modifier)
-#     elif action == "right":
-#         motor_right.run(-180 * speed_modifier)
-#         motor_left.run(180 * speed_modifier) 
 
 def collisionavoidence():
     """ change the speed depending how close objekt is """
