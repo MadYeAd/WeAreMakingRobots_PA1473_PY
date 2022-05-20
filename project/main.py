@@ -17,6 +17,7 @@ import __init__
 
 """ Funktioner """
 def main(): 
+
     destination='white'
     destination = input('Destination ')
     while True:
